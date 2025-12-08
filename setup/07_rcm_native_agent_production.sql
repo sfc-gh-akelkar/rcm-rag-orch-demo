@@ -188,10 +188,11 @@ DROP AGENT IF EXISTS SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod;
 -- Create production agent with native orchestration
 CREATE AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod
 WITH PROFILE='{ 
-    "display_name": "RCM Intelligence Hub (Production)",
-    "description": "Production agent for Healthcare Revenue Cycle Management with native orchestration and SiS deployment"
+    "display_name": "RCM Intelligence Hub",
+    "avatar": "healthcare-icon.png",
+    "color": "blue"
 }'
-COMMENT = 'Production Cortex Agent replacing custom orchestrator.py. Handles automatic routing between Analytics (Cortex Analyst), Knowledge Base (Cortex Search), and general queries.'
+COMMENT = 'Production Cortex Agent for Healthcare Revenue Cycle Management with native orchestration and SiS deployment. Replaces custom orchestrator.py and handles automatic routing between Analytics (Cortex Analyst), Knowledge Base (Cortex Search), and general queries.'
 FROM SPECIFICATION $$
 {
   "models": {
