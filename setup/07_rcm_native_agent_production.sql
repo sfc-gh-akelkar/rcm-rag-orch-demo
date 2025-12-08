@@ -310,54 +310,34 @@ CRITICAL RULES:
 
     "sample_questions": [
       {
-        "question": "What is the clean claim rate by provider?",
-        "route": "Enhance RCM Query → Analyze Claims Processing Data",
-        "reasoning": "Quantitative metric requiring calculation from claims data"
+        "question": "What is the clean claim rate by provider?"
       },
       {
-        "question": "Which payers have the highest denial rates?",
-        "route": "Enhance RCM Query → Analyze Denials and Appeals Data",
-        "reasoning": "Comparative denial rate analysis across payers"
+        "question": "Which payers have the highest denial rates?"
       },
       {
-        "question": "How do I resolve a CO-45 denial in ServiceNow?",
-        "route": "Enhance RCM Query → Search RCM Operations Documents",
-        "reasoning": "Procedural question about ServiceNow workflow (operations)"
+        "question": "How do I resolve a CO-45 denial in ServiceNow?"
       },
       {
-        "question": "What are our HIPAA compliance requirements for claims processing?",
-        "route": "Enhance RCM Query → Search RCM Compliance Documents",
-        "reasoning": "Policy question about regulatory compliance"
+        "question": "What are our HIPAA compliance requirements for claims processing?"
       },
       {
-        "question": "Show me revenue trends for Q4",
-        "route": "Enhance RCM Query → Analyze Claims Processing Data",
-        "reasoning": "Time-series trend analysis of financial data"
+        "question": "Show me revenue trends for Q4"
       },
       {
-        "question": "What is our vendor contract policy?",
-        "route": "Enhance RCM Query → Search RCM Financial Documents",
-        "reasoning": "Policy question about financial contracts"
+        "question": "What is our vendor contract policy?"
       },
       {
-        "question": "Compare appeal success rates by denial code",
-        "route": "Enhance RCM Query → Analyze Denials and Appeals Data",
-        "reasoning": "Comparative metrics requiring aggregation of appeal outcomes"
+        "question": "Compare appeal success rates by denial code"
       },
       {
-        "question": "What is our market strategy for 2025?",
-        "route": "Enhance RCM Query → Search RCM Strategy Documents",
-        "reasoning": "Strategic planning documentation search"
+        "question": "What is our market strategy for 2025?"
       },
       {
-        "question": "Show me remits for Anthem this month",
-        "route": "Enhance RCM Query → Analyze Claims Processing Data",
-        "reasoning": "Query with RCM terminology (remits=ERA) requiring data analysis. Enhancement will clarify terminology."
+        "question": "Show me remits for Anthem this month"
       },
       {
-        "question": "How long do write-offs take to approve?",
-        "route": "Enhance RCM Query → Analyze Claims Processing Data + Search RCM Financial Documents",
-        "reasoning": "Could use both: analytics for actual timing data, and financial docs for policy. Start with analytics."
+        "question": "How long do write-offs take to approve?"
       }
     ]
   },
