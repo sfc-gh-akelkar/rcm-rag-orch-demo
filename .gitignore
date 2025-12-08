@@ -1,7 +1,5 @@
 # RCM Intelligence Hub - Git Ignore
-
-# Snowflake secrets
-.streamlit/secrets.toml
+# Streamlit in Snowflake deployment
 
 # Python
 __pycache__/
@@ -52,3 +50,5 @@ env/
 # Environment variables
 .env
 
+# Snowflake CLI
+.snowflake/

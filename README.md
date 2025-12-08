@@ -1,138 +1,120 @@
 # Healthcare Revenue Cycle Management AI Demo
 
-**Unified AI Orchestration for Healthcare RCM with Two Deployment Options**
+**Production-Ready AI Orchestration with Streamlit in Snowflake**
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Snowflake](https://img.shields.io/badge/Snowflake-Cortex%20AI-29B5E8)](https://www.snowflake.com/en/data-cloud/cortex/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-FF4B4B)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-in%20Snowflake-FF4B4B)](https://streamlit.io/)
 
 ---
 
 ## 🎯 Overview
 
-This project demonstrates Snowflake Intelligence capabilities for **Healthcare Revenue Cycle Management (RCM)**, featuring:
+Production-ready **Snowflake Intelligence** solution for Healthcare Revenue Cycle Management (RCM), featuring:
 
-- ✅ **Unified AI Orchestration**: Automatic routing between analytics and knowledge base
-- ✅ **RCM Domain Intelligence**: Handles healthcare terminology automatically
-- ✅ **Cost Optimization**: 90%+ token reduction with full visibility
-- ✅ **Two Deployment Options**: External (demos) and SiS (production)
+- ✅ **Native Cortex Agent Orchestration**: Automatic routing between analytics and knowledge base
+- ✅ **RCM Domain Intelligence**: Handles healthcare terminology via Snowflake UDFs
+- ✅ **Zero Data Movement**: Everything runs inside Snowflake (HIPAA compliant)
+- ✅ **Cost Optimized**: 90%+ token reduction with full visibility
 
 **Solves Quadax's Three Key Problems**:
 1. Point Solution Fatigue → Single unified interface
-2. Domain Specificity → RCM terminology enhancement
-3. Cost & Token Control → Full transparency and optimization
+2. Domain Specificity → RCM terminology enhancement  
+3. Cost & Token Control → Native monitoring and optimization
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: External Streamlit (Demo/POC)
-
-**Perfect for**: Technical demos, development, showcasing custom orchestration
-
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure credentials
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-# Edit secrets.toml with your Snowflake credentials
-
-# Run
-streamlit run app.py
-```
-
-### Option 2: Streamlit in Snowflake (Production) 🎯
-
-**Perfect for**: Quadax production, HIPAA compliance, enterprise deployment
-
-```bash
-# Install Snowflake CLI
+# 1. Install Snowflake CLI
 pip install snowflake-cli-labs
 
-# Execute SQL setup (in Snowflake)
-# Run: sql_scripts/07_rcm_native_agent_production.sql
+# 2. Execute SQL setup in Snowflake
+# Run scripts 01-07 in sql_scripts/
 
-# Deploy to Snowflake
+# 3. Deploy to Snowflake
 ./deploy_to_snowflake.sh
 ```
 
----
+**That's it!** Your app runs inside Snowflake.
 
-## 📊 Comparison: External vs SiS
-
-| Aspect | External | SiS 🎯 |
-|--------|----------|--------|
-| **Best For** | Demos, POCs | Production |
-| **Security** | ⚠️ Data crosses boundary | ✅ Data stays in Snowflake |
-| **Cost** | $400/mo | $200/mo (50% savings) |
-| **HIPAA** | ⚠️ Complex | ✅ Native compliance |
-| **Deployment** | 5 min (local) | 30 min (one-time) |
-| **Hosting** | External required | Snowflake managed |
-
-**Recommendation**: Demo with External, deploy SiS to production.
+**See**: [QUICKSTART.md](QUICKSTART.md) for detailed steps
 
 ---
 
 ## 🏗️ Architecture
 
-### External Deployment (Approach 1)
 ```
-External Server
-├── Streamlit UI (app.py)
-├── Custom Orchestrator (orchestrator.py)
-├── Cost Tracker (cost_tracker.py)
-└── RCM Terminology (rcm_terminology.py)
-    ↓ Network
-Snowflake (Cortex API)
+┌──────────────────────────────────────────────┐
+│  SNOWFLAKE (Everything Inside)               │
+│                                              │
+│  ┌────────────────────────────────────────┐ │
+│  │  Streamlit App                         │ │
+│  │  (streamlit_app.py)                    │ │
+│  └──────────────┬─────────────────────────┘ │
+│                 │                            │
+│                 ▼                            │
+│  ┌────────────────────────────────────────┐ │
+│  │  Native Cortex Agent                   │ │
+│  │  (RCM_Healthcare_Agent_Prod)           │ │
+│  │                                        │ │
+│  │  Tools:                                │ │
+│  │  • Cortex Analyst (Analytics)          │ │
+│  │  • Cortex Search (Knowledge Base)      │ │
+│  │  • RCM UDFs (Terminology)             │ │
+│  └──────────────┬─────────────────────────┘ │
+│                 │                            │
+│                 ▼                            │
+│  ┌────────────────────────────────────────┐ │
+│  │  Data Layer                            │ │
+│  │  • Claims, denials, payers, providers  │ │
+│  │  • Semantic views (2)                  │ │
+│  │  • Search services (5)                 │ │
+│  │  • Documents (embedded)                │ │
+│  └────────────────────────────────────────┘ │
+└──────────────────────────────────────────────┘
 ```
 
-### SiS Deployment (Approach 2) 🎯
-```
-Snowflake (Everything Inside)
-├── Streamlit App (streamlit_app.py)
-└── Native Cortex Agent
-    ├── Cortex Analyst (Analytics)
-    ├── Cortex Search (Knowledge Base)
-    └── RCM UDFs (Terminology)
-```
+**Key Benefits**:
+- ✅ Data never leaves Snowflake perimeter (HIPAA)
+- ✅ Native Snowflake RBAC (no credential management)
+- ✅ Auto-scaling compute
+- ✅ 50% cost savings vs external hosting
 
 ---
 
 ## 📚 Documentation
 
-### Quick Start
-- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup for both approaches
-
-### Comprehensive Guides
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide (External + SiS)
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Technical architecture and comparison
-
-### Demo Materials
-- **[RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)** - Demo script and talking points
+| Document | Purpose |
+|----------|---------|
+| **[QUICKSTART.md](QUICKSTART.md)** | Get running in 30 minutes |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | Complete deployment guide |
+| **[ARCHITECTURE.md](ARCHITECTURE.md)** | Technical architecture details |
+| **[RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)** | Demo script |
 
 ---
 
-## 🎯 RCM Demo Capabilities
+## 🎯 RCM Capabilities
 
-**📊 Analytics & Metrics** (Cortex Analyst):
+### Analytics (Cortex Analyst)
 - Clean claim rates by provider
-- Denial rates and patterns by payer
+- Denial rates and patterns by payer  
 - Net collection rates and trends
 - Days in A/R analysis
 - Appeal success rates
 
-**📚 Knowledge Base** (Cortex Search):
+### Knowledge Base (Cortex Search)
 - RCM policies and procedures
 - ServiceNow workflow guides
 - HIPAA compliance requirements
 - Denial resolution procedures
 - Payer contract terms
 
-**💡 RCM Terminology Intelligence**:
-- 50+ healthcare terms (remit, write-off, A/R, etc.)
-- 15+ abbreviations (ERA, EDI, COB, etc.)
-- 13+ denial codes (CO-45, PR-1, etc.)
+### RCM Terminology Intelligence (UDFs)
+- 50+ healthcare terms automatically enhanced
+- 15+ abbreviations expanded
+- 13+ denial codes with context
 
 ---
 
@@ -141,19 +123,12 @@ Snowflake (Everything Inside)
 ```
 RCM_RAG_ORCH_DEMO/
 │
-├── 📁 External Deployment (Demo)
-│   ├── app.py                    # Streamlit UI
-│   ├── orchestrator.py           # Custom routing
-│   ├── cost_tracker.py           # Token tracking
-│   ├── rcm_terminology.py        # Domain intelligence
-│   └── config.py                 # Configuration
-│
-├── 📁 SiS Deployment (Production)
+├── 📁 Streamlit in Snowflake (Production)
 │   ├── streamlit_app.py          # SiS-optimized UI
-│   ├── sql_scripts/07_*.sql      # Native agent + UDFs
-│   ├── snowflake.yml             # Deployment config
-│   ├── environment.yml           # Dependencies
-│   └── deploy_to_snowflake.sh   # Automation
+│   ├── snowflake.yml              # Deployment config
+│   ├── environment.yml            # Dependencies
+│   ├── requirements_sis.txt       # Python packages
+│   └── deploy_to_snowflake.sh    # Automation script
 │
 ├── 📁 SQL Setup Scripts
 │   ├── 01_rcm_data_setup.sql
@@ -162,21 +137,19 @@ RCM_RAG_ORCH_DEMO/
 │   ├── 04_rcm_semantic_views.sql
 │   ├── 05_rcm_cortex_search.sql
 │   ├── 06_rcm_agent_setup.sql
-│   └── 07_rcm_native_agent_production.sql
+│   └── 07_rcm_native_agent_production.sql  ← Production agent + UDFs
 │
 └── 📁 Documentation
-    ├── README.md                 # This file
-    ├── QUICKSTART.md             # Quick setup
-    ├── DEPLOYMENT.md             # Full deployment guide
-    ├── ARCHITECTURE.md           # Technical details
+    ├── README.md
+    ├── QUICKSTART.md
+    ├── DEPLOYMENT.md
+    ├── ARCHITECTURE.md
     └── RCM_15_Minute_Demo_Story.md
 ```
 
 ---
 
 ## 💡 Sample Questions
-
-Try these in the app:
 
 **Analytics**:
 - "What is the clean claim rate by provider?"
@@ -189,41 +162,8 @@ Try these in the app:
 - "Find appeal filing deadlines by payer"
 
 **RCM Terminology** (auto-enhanced):
-- "Show me remits for Anthem" → Enhanced with "remittance advice (ERA)"
-- "What's our write-off policy?" → Enhanced with adjustment codes
-
----
-
-## 🏥 RCM Data Model
-
-**10 Dimension Tables**:
-- Healthcare providers
-- Payers
-- Procedures (CPT codes)
-- Diagnoses (ICD-10)
-- Provider specialties
-- Geographic regions
-- RCM employees
-- Denial reasons
-- Appeals
-- Patients
-
-**4 Fact Tables**:
-- Claims (50,000+ records)
-- Denials (7,500+ records)
-- Payments
-- Encounters
-
-**2 Semantic Views**:
-- Claims Processing View
-- Denials Management View
-
-**5 Cortex Search Services**:
-- RCM Financial Documents
-- RCM Operations Documents
-- RCM Compliance Documents
-- RCM Strategy Documents
-- Healthcare Knowledge Base
+- "Show me remits for Anthem" → "remittance advice (ERA)"
+- "What's our write-off policy?" → Includes adjustment codes
 
 ---
 
@@ -233,37 +173,36 @@ Try these in the app:
 
 1. Snowflake account with Cortex enabled
 2. Python 3.9+
-3. Git
+3. Snowflake CLI installed
 
-### Database Setup
+### Step 1: Execute SQL Scripts
 
-Execute SQL scripts in order (in Snowflake):
+Run in Snowflake (in order):
+
 ```sql
--- 1. Infrastructure (database, schema, warehouse, role)
+-- 1-6: Base setup (data, documents, semantic views, search)
 sql_scripts/01_rcm_data_setup.sql
-
--- 2. Load documents
 sql_scripts/02_rcm_documents_setup.sql
-
--- 3. Generate synthetic RCM data
 sql_scripts/03_rcm_data_generation.sql
-
--- 4. Create semantic views for Cortex Analyst
 sql_scripts/04_rcm_semantic_views.sql
-
--- 5. Create Cortex Search services
 sql_scripts/05_rcm_cortex_search.sql
-
--- 6. (Optional) Create basic agent
 sql_scripts/06_rcm_agent_setup.sql
 
--- 7. For SiS: Create production agent + UDFs
+-- 7: Production agent + UDFs
 sql_scripts/07_rcm_native_agent_production.sql
 ```
 
-### App Deployment
+### Step 2: Deploy Streamlit App
 
-**See detailed instructions in [DEPLOYMENT.md](DEPLOYMENT.md)**
+```bash
+# Install CLI
+pip install snowflake-cli-labs
+
+# Deploy
+./deploy_to_snowflake.sh
+```
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions**
 
 ---
 
@@ -271,45 +210,53 @@ sql_scripts/07_rcm_native_agent_production.sql
 
 ### Token Optimization
 
-**Problem**: Quadax reported 30k+ tokens per query  
-**Solution**: Optimized to 1,500-2,500 average  
+**Before**: 30,000+ tokens per query (Quadax's concern)  
+**After**: 1,500-2,500 tokens average  
 **Savings**: 90%+ reduction
 
 **How**:
-- Lightweight router model (llama3.2-3b)
+- Native agent orchestration (optimized by Snowflake)
 - Limited context retrieval (5 docs max)
 - Smart chunking (500 chars per doc)
-- Right model for each task
+- RCM UDFs for terminology (efficient)
 
-### Cost Comparison
+### Cost Savings
 
-| Deployment | Monthly Cost | Notes |
-|-----------|-------------|-------|
-| External | $400 | Snowflake $200 + AWS $150 + Transfer $50 |
-| **SiS** | **$200** | **Snowflake only (50% savings)** |
+| Metric | Monthly Cost |
+|--------|-------------|
+| Snowflake compute | $200 |
+| Hosting | $0 (included in Snowflake) |
+| Data transfer | $0 (all internal) |
+| **Total** | **$200/month** |
 
-**Annual savings with SiS**: $2,400
+**Compare to external hosting**: ~$400/month  
+**Savings**: 50% ($200/month = $2,400/year)
 
 ---
 
 ## 🔐 Security & Compliance
 
-### External Deployment
+### HIPAA Compliance
 
-- ⚠️ PHI/PII crosses Snowflake boundary
-- ⚠️ Requires separate BAA with hosting provider
-- ⚠️ Manual credential management
-- ⚠️ Custom audit logging needed
+- ✅ **Data never leaves Snowflake perimeter**
+- ✅ **Covered by Snowflake's BAA** (no separate BAA needed)
+- ✅ **Native encryption** (Snowflake-managed)
+- ✅ **Audit trail** (query history built-in)
+- ✅ **Data residency** (guaranteed by Snowflake region)
 
-### SiS Deployment 🎯
+**For Quadax (Healthcare/RCM)**: Production-ready out of the box
 
-- ✅ Data never leaves Snowflake perimeter
-- ✅ Covered by Snowflake's BAA
-- ✅ Native encryption and audit trail
-- ✅ Snowflake RBAC (no credential management)
-- ✅ **HIPAA compliant out of the box**
+### Role-Based Access Control
 
-**For Quadax (Healthcare/RCM)**: SiS is the recommended production option.
+```sql
+-- Grant app access to users
+GRANT USAGE ON STREAMLIT RCM_AI_DEMO.RCM_SCHEMA.rcm_intelligence_hub 
+  TO ROLE BUSINESS_ANALYST;
+
+-- Grant agent access
+GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod 
+  TO ROLE BUSINESS_ANALYST;
+```
 
 ---
 
@@ -318,26 +265,27 @@ sql_scripts/07_rcm_native_agent_production.sql
 ### 5-Minute Demo Flow
 
 1. **Show unified interface** (30 sec)
-   - "One chat window - no tool selection needed"
+   - One chat window - native Cortex Agent routes automatically
 
 2. **Analytics example** (1 min)
    - Query: "What is the clean claim rate by provider?"
-   - Show: Auto-routing to Cortex Analyst
+   - Show: Auto-routing to Cortex Analyst, RCM metrics
 
 3. **Knowledge base example** (1 min)
    - Query: "How do I resolve a Code 45 denial?"
-   - Show: RCM terminology enhancement, document search
+   - Show: RCM terminology enhancement (Code 45 → "charge exceeds fee schedule")
 
 4. **Cost tracking** (1 min)
    - Enable debug panel
-   - Show: Token counts, routing decision, cost estimate
+   - Show: Token counts, agent reasoning, cost estimate
 
 5. **Value proposition** (1.5 min)
    - Solves point solution fatigue
-   - RCM domain intelligence
+   - RCM domain intelligence (50+ terms)
    - 90% token reduction
+   - HIPAA compliant
 
-**Complete demo script**: [RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)
+**Complete script**: [RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)
 
 ---
 
@@ -345,37 +293,27 @@ sql_scripts/07_rcm_native_agent_production.sql
 
 ### Add Custom RCM Terms
 
-**External** (`rcm_terminology.py`):
-```python
-RCM_TERMINOLOGY = {
-    "your_term": "definition",
-    # Add company-specific terms
-}
-```
+Edit `sql_scripts/07_rcm_native_agent_production.sql`:
 
-**SiS** (07_rcm_native_agent_production.sql):
 ```sql
 CREATE OR REPLACE FUNCTION ENHANCE_RCM_QUERY(...)
 AS $$
     terminology = {
-        "your_term": "definition"
+        "your_term": "definition",
+        "quadax_specific": "your context"
     }
 $$;
 ```
 
-### Adjust Token Limits
+### Adjust Search Results
 
-**External** (`config.py`):
-```python
-MAX_SEARCH_RESULTS = 5  # Reduce to 3 for more cost savings
-```
+Edit agent configuration in `07_rcm_native_agent_production.sql`:
 
-**SiS** (Agent config):
 ```json
 {
   "tool_resources": {
-    "Search RCM Knowledge Base": {
-      "max_results": 3
+    "Search Healthcare Knowledge Base": {
+      "max_results": 3  // Reduce from 5 for cost savings
     }
   }
 }
@@ -385,21 +323,21 @@ MAX_SEARCH_RESULTS = 5  # Reduce to 3 for more cost savings
 
 ## 🐛 Troubleshooting
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed troubleshooting guide.
-
 **Quick Fixes**:
 
-- **Can't connect to Snowflake**: Check credentials in `.streamlit/secrets.toml`
 - **Agent not found**: Run `07_rcm_native_agent_production.sql`
 - **Search service error**: Verify `05_rcm_cortex_search.sql` executed
-- **High token usage**: Reduce `MAX_SEARCH_RESULTS` in config
+- **Streamlit won't start**: Check warehouse is running, redeploy with `snow streamlit deploy --replace`
+- **High token usage**: Reduce `max_results` in agent config
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive troubleshooting**
 
 ---
 
 ## 📞 Support & Resources
 
 ### Documentation
-- **Quick Setup**: [QUICKSTART.md](QUICKSTART.md)
+- **Quick Setup**: [QUICKSTART.md](QUICKSTART.md) (30 min)
 - **Full Deployment**: [DEPLOYMENT.md](DEPLOYMENT.md)
 - **Architecture**: [ARCHITECTURE.md](ARCHITECTURE.md)
 
@@ -407,57 +345,56 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed troubleshooting guide.
 - [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
 - [Cortex Agents](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
 - [Cortex Search](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview)
-- [Cortex Analyst](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst)
 
 ---
 
 ## ✅ Success Criteria
 
-**Demo Success**:
-- ✅ Single interface routing to correct tools
-- ✅ RCM terminology properly enhanced
+**Deployment Success**:
+- ✅ App running in Snowflake (Snowsight → Projects → Streamlit)
+- ✅ Native agent routing correctly (test analytics & KB queries)
+- ✅ RCM terminology enhanced (test "remit", "Code 45", etc.)
 - ✅ Token usage < 5,000 per query average
-- ✅ Clear cost visibility in debug panel
 
-**Production Success** (SiS):
-- ✅ HIPAA compliance (data in Snowflake)
-- ✅ 50% cost reduction achieved
+**Production Success** (Quadax):
+- ✅ HIPAA compliance (data stays in Snowflake)
 - ✅ User adoption and satisfaction
+- ✅ Cost savings achieved
 - ✅ Zero security incidents
 
 ---
 
-## 🎉 Get Started
-
-1. **Read**: [QUICKSTART.md](QUICKSTART.md) (5 minutes)
-2. **Setup**: Run SQL scripts 01-07 in Snowflake
-3. **Deploy**:
-   - **Demo**: `streamlit run app.py`
-   - **Production**: `./deploy_to_snowflake.sh`
-4. **Test**: Try sample questions above
-5. **Customize**: Adjust for your RCM terminology
-
-**Questions?** See [DEPLOYMENT.md](DEPLOYMENT.md) or check inline code comments.
-
----
-
-## 🏆 Why This Matters for Quadax
+## 🎉 Why This Matters for Quadax
 
 **Before**:
 - ❌ Multiple isolated AI prototypes
 - ❌ No unified orchestration
-- ❌ 30k+ tokens per query (high cost)
+- ❌ 30k+ tokens per query
 - ❌ Models don't understand RCM terminology
+- ❌ Data security concerns
 
 **After**:
-- ✅ Single unified interface
-- ✅ Automatic intelligent routing
-- ✅ 90%+ token reduction (cost savings)
-- ✅ RCM domain intelligence built-in
-- ✅ HIPAA-compliant deployment option
+- ✅ Single Snowflake-native interface
+- ✅ Native Cortex Agent orchestration
+- ✅ 90%+ token reduction  
+- ✅ 50+ RCM terms automatically handled
+- ✅ **HIPAA-compliant (data never leaves Snowflake)**
+- ✅ 50% cost savings
 - ✅ Enterprise-ready for production
 
-**Result**: Production-ready AI orchestration for healthcare revenue cycle management.
+**Result**: Production-ready, HIPAA-compliant AI orchestration for healthcare revenue cycle management.
+
+---
+
+## 🚀 Get Started Now
+
+```bash
+# Quick start
+pip install snowflake-cli-labs
+./deploy_to_snowflake.sh
+```
+
+**Questions?** See [QUICKSTART.md](QUICKSTART.md) or [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ---
 
