@@ -80,7 +80,7 @@ A production-ready application that enables RCM teams to:
 **Step 1.** In Snowsight, create a SQL Worksheet for each script below and execute them **in order**:
 
 ### 1. Database & Infrastructure Setup
-Open `sql_scripts/01_rcm_data_setup.sql` and execute all statements. This will:
+Open `setup/01_rcm_data_setup.sql` and execute all statements. This will:
 - Create the `RCM_AI_DEMO` database and `RCM_SCHEMA` schema
 - Create the `RCM_INTELLIGENCE_WH` warehouse
 - Set up roles and permissions
@@ -88,26 +88,26 @@ Open `sql_scripts/01_rcm_data_setup.sql` and execute all statements. This will:
 - Create dimension tables (providers, payers, procedures, etc.)
 
 ### 2. Document Loading
-Open `sql_scripts/02_rcm_documents_setup.sql` and execute all statements. This will:
+Open `setup/02_rcm_documents_setup.sql` and execute all statements. This will:
 - Parse RCM documents (policies, procedures, contracts) using Cortex Document AI
 - Create `RCM_PARSED_CONTENT` table with embeddings
 - Load ~40+ documents across Finance, HR, Marketing, Sales categories
 
 ### 3. Data Generation
-Open `sql_scripts/03_rcm_data_generation.sql` and execute all statements. This will:
+Open `setup/03_rcm_data_generation.sql` and execute all statements. This will:
 - Generate 50,000+ synthetic claims records
 - Generate 7,500+ denial records with realistic patterns
 - Create payment and encounter records
 - Populate fact tables for analytics
 
 ### 4. Semantic Views for Cortex Analyst
-Open `sql_scripts/04_rcm_semantic_views.sql` and execute all statements. This will:
+Open `setup/04_rcm_semantic_views.sql` and execute all statements. This will:
 - Create `CLAIMS_PROCESSING_VIEW` semantic view (for structured analytics)
 - Create `DENIALS_MANAGEMENT_VIEW` semantic view (for denials analytics)
 - Define metrics, dimensions, and relationships for Text-to-SQL
 
 ### 5. Cortex Search Services
-Open `sql_scripts/05_rcm_cortex_search.sql` and execute all statements. This will:
+Open `setup/05_rcm_cortex_search.sql` and execute all statements. This will:
 - Create 5 Cortex Search services:
   - `RCM_FINANCE_DOCS_SEARCH` (financial policies, contracts)
   - `RCM_OPERATIONS_DOCS_SEARCH` (operational procedures)
@@ -116,7 +116,7 @@ Open `sql_scripts/05_rcm_cortex_search.sql` and execute all statements. This wil
   - `RCM_KNOWLEDGE_BASE_SEARCH` (comprehensive search)
 
 ### 6. Cortex Agent Setup (Basic)
-Open `sql_scripts/06_rcm_agent_setup.sql` and execute all statements. This will:
+Open `setup/06_rcm_agent_setup.sql` and execute all statements. This will:
 - Create external access integrations
 - Create helper UDFs and stored procedures
 - Create the basic `RCM_Healthcare_Agent` with 10 tools:
@@ -125,7 +125,7 @@ Open `sql_scripts/06_rcm_agent_setup.sql` and execute all statements. This will:
   - 3 Custom tools (Document URLs, Email alerts, Web scraping)
 
 ### 7. Production Agent with RCM Intelligence (Optional but Recommended)
-Open `sql_scripts/07_rcm_native_agent_production.sql` and execute all statements. This creates:
+Open `setup/07_rcm_native_agent_production.sql` and execute all statements. This creates:
 - Production-ready agent with RCM terminology UDFs
 - Enhanced orchestration instructions
 - Cost optimization features
@@ -152,7 +152,7 @@ Now that your data and agent are configured, create the interactive Streamlit in
 
 **Step 4.** Delete the default code in the editor
 
-**Step 5.** Copy and paste the entire contents of `08_streamlit_app.py` into the editor
+**Step 5.** Copy and paste the entire contents of `setup/08_streamlit_app.py` into the editor
 
 **Step 6.** Click **Run** (top right)
 
@@ -351,16 +351,18 @@ Congratulations! You've successfully built an RCM Intelligence Hub using Snowfla
 ```
 RCM_RAG_ORCH_DEMO/
 │
-├── sql_scripts/                    # Execute in numbered order
+├── README.md                      # This comprehensive guide
+├── RCM_15_Minute_Demo_Story.md    # Demo presentation script
+│
+├── setup/                         # Execute in numbered order (01-08)
 │   ├── 01_rcm_data_setup.sql
 │   ├── 02_rcm_documents_setup.sql
 │   ├── 03_rcm_data_generation.sql
 │   ├── 04_rcm_semantic_views.sql
 │   ├── 05_rcm_cortex_search.sql
 │   ├── 06_rcm_agent_setup.sql
-│   └── 07_rcm_native_agent_production.sql
-│
-├── 08_streamlit_app.py            # Paste into Streamlit in Snowflake
+│   ├── 07_rcm_native_agent_production.sql
+│   └── 08_streamlit_app.py        # Paste into Streamlit in Snowflake
 │
 ├── unstructured_docs/             # Sample RCM documents
 │   ├── finance/
@@ -368,11 +370,8 @@ RCM_RAG_ORCH_DEMO/
 │   ├── marketing/
 │   └── sales/
 │
-└── docs/                          # Reference documentation
-    ├── ARCHITECTURE.md
-    ├── DEPLOYMENT.md
-    ├── DEMO_HIGHLIGHTS.md
-    └── SNOWFLAKE_STANDARDS_UPDATE.md
+├── requirements_sis.txt
+└── environment.yml
 ```
 
 ---
