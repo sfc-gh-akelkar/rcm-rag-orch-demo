@@ -120,7 +120,7 @@ $$;
 
 -- Get detected terms as array
 CREATE OR REPLACE FUNCTION GET_RCM_TERMS(query STRING)
-RETURNS ARRAY
+RETURNS VARIANT
 LANGUAGE SQL
 AS $$
     SELECT ENHANCE_RCM_QUERY(query):terms_detected
