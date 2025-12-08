@@ -152,8 +152,8 @@ $$;
 
 -- Calculate cost estimate
 CREATE OR REPLACE FUNCTION ESTIMATE_COST(
-    input_tokens INTEGER,
-    output_tokens INTEGER,
+    input_tokens FLOAT,
+    output_tokens FLOAT,
     model STRING
 )
 RETURNS FLOAT
