@@ -7,6 +7,32 @@ This project demonstrates Snowflake Intelligence capabilities specifically desig
 - **Healthcare Document Intelligence** (Cortex Search for RCM policies and procedures)
 - **Specialized RCM AI Agent** (Multi-tool orchestration for healthcare revenue cycle analysis)
 
+---
+
+## 🆕 **NEW: Orchestrated AI Interface**
+
+**Solving "Point Solution Fatigue" for Quadax**
+
+We've added a **Streamlit-based Orchestration Layer** that implements a Supervisor Agent pattern, addressing three key concerns:
+
+1. ✅ **Unified Interface**: Single chat window - no tool selection needed
+2. ✅ **RCM Domain Intelligence**: Automatic handling of healthcare terminology ("remits", "write-offs", denial codes)
+3. ✅ **Cost & Token Control**: Full visibility into token usage and cost per query
+
+**Quick Start:**
+```bash
+pip install -r requirements.txt
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+# Edit secrets.toml with your Snowflake credentials
+streamlit run app.py
+```
+
+**Documentation:**
+- 📘 **[Full Architecture Guide](README_ORCHESTRATION.md)** - Deep dive into the Supervisor Agent pattern
+- 🚀 **[Quick Start Guide](QUICKSTART.md)** - 5-minute setup walkthrough
+
+---
+
 ## 🏥 RCM Demo Capabilities
 
 This demo enables natural language analysis of:

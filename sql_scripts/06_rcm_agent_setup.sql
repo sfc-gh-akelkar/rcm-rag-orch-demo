@@ -383,11 +383,6 @@ SHOW AGENTS IN SCHEMA snowflake_intelligence.agents;
 -- Verify all components are in place
 SELECT 'Verifying RCM Demo Components...' as verification_step;
 
--- Check semantic views
-SELECT 'Semantic Views:' as component, COUNT(*) as count 
-FROM INFORMATION_SCHEMA.SEMANTIC_VIEWS 
-WHERE SEMANTIC_VIEW_SCHEMA = 'RCM_SCHEMA'
-UNION ALL
 -- Check search services  
 SELECT 'Search Services:' as component, COUNT(*) as count
 FROM INFORMATION_SCHEMA.CORTEX_SEARCH_SERVICES
