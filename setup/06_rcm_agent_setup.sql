@@ -13,6 +13,8 @@ USE ROLE accountadmin;
 GRANT ALL PRIVILEGES ON DATABASE RCM_AI_DEMO TO ROLE ACCOUNTADMIN;
 GRANT ALL PRIVILEGES ON SCHEMA RCM_AI_DEMO.RCM_SCHEMA TO ROLE ACCOUNTADMIN;
 
+Use schema rcm_ai_demo.rcm_schema;
+
 -- Network rule for external web access (for web scraping healthcare data)
 CREATE OR REPLACE NETWORK RULE rcm_intelligence_web_access_rule
   MODE = EGRESS
@@ -386,6 +388,7 @@ $$;
 -- ========================================================================
 
 -- Grant USAGE privilege on the agent to the demo role
+
 GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent 
   TO ROLE SF_INTELLIGENCE_DEMO;
 
