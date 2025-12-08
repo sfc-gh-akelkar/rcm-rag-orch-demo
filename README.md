@@ -2,9 +2,9 @@
 
 **Production-Ready AI Orchestration with Streamlit in Snowflake**
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Snowflake](https://img.shields.io/badge/Snowflake-Cortex%20AI-29B5E8)](https://www.snowflake.com/en/data-cloud/cortex/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-in%20Snowflake-FF4B4B)](https://streamlit.io/)
+[![Deployment](https://img.shields.io/badge/Deploy-Snowsight-blue)](https://docs.snowflake.com/en/user-guide/ui-snowsight)
 
 ---
 
@@ -15,6 +15,7 @@ Production-ready **Snowflake Intelligence** solution for Healthcare Revenue Cycl
 - ✅ **Native Cortex Agent Orchestration**: Automatic routing between analytics and knowledge base
 - ✅ **RCM Domain Intelligence**: Handles healthcare terminology via Snowflake UDFs
 - ✅ **Zero Data Movement**: Everything runs inside Snowflake (HIPAA compliant)
+- ✅ **Snowsight Deployment**: 100% browser-based setup (no CLI required)
 - ✅ **Cost Optimized**: 90%+ token reduction with full visibility
 
 **Solves Quadax's Three Key Problems**:
@@ -26,20 +27,19 @@ Production-ready **Snowflake Intelligence** solution for Healthcare Revenue Cycl
 
 ## 🚀 Quick Start
 
-```bash
-# 1. Install Snowflake CLI
-pip install snowflake-cli-labs
+**No local setup required - everything in Snowsight!**
 
-# 2. Execute SQL setup in Snowflake
-# Run scripts 01-07 in sql_scripts/
-
-# 3. Deploy to Snowflake
-./deploy_to_snowflake.sh
+```
+1. Open Snowsight (your browser)
+2. Execute SQL scripts 01-07 in worksheets
+3. Create Streamlit app in Snowsight UI
+4. Paste streamlit_app.py code
+5. Click Run
 ```
 
 **That's it!** Your app runs inside Snowflake.
 
-**See**: [QUICKSTART.md](QUICKSTART.md) for detailed steps
+**See**: [QUICKSTART.md](QUICKSTART.md) for detailed steps (~30 minutes)
 
 ---
 
@@ -50,7 +50,7 @@ pip install snowflake-cli-labs
 │  SNOWFLAKE (Everything Inside)               │
 │                                              │
 │  ┌────────────────────────────────────────┐ │
-│  │  Streamlit App                         │ │
+│  │  Streamlit App (Snowsight)             │ │
 │  │  (streamlit_app.py)                    │ │
 │  └──────────────┬─────────────────────────┘ │
 │                 │                            │
@@ -80,7 +80,8 @@ pip install snowflake-cli-labs
 - ✅ Data never leaves Snowflake perimeter (HIPAA)
 - ✅ Native Snowflake RBAC (no credential management)
 - ✅ Auto-scaling compute
-- ✅ 50% cost savings vs external hosting
+- ✅ 46% cost savings vs external hosting
+- ✅ 100% Snowsight deployment (no CLI)
 
 ---
 
@@ -88,8 +89,8 @@ pip install snowflake-cli-labs
 
 | Document | Purpose |
 |----------|---------|
-| **[QUICKSTART.md](QUICKSTART.md)** | Get running in 30 minutes |
-| **[DEPLOYMENT.md](DEPLOYMENT.md)** | Complete deployment guide |
+| **[QUICKSTART.md](QUICKSTART.md)** | Get running in 30 minutes (Snowsight) |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | Complete deployment guide (Snowsight) |
 | **[ARCHITECTURE.md](ARCHITECTURE.md)** | Technical architecture details |
 | **[RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)** | Demo script |
 
@@ -123,14 +124,10 @@ pip install snowflake-cli-labs
 ```
 RCM_RAG_ORCH_DEMO/
 │
-├── 📁 Streamlit in Snowflake (Production)
-│   ├── streamlit_app.py          # SiS-optimized UI
-│   ├── snowflake.yml              # Deployment config
-│   ├── environment.yml            # Dependencies
-│   ├── requirements_sis.txt       # Python packages
-│   └── deploy_to_snowflake.sh    # Automation script
+├── 📁 Streamlit App (Deploy in Snowsight)
+│   └── streamlit_app.py          # Paste into Snowsight editor
 │
-├── 📁 SQL Setup Scripts
+├── 📁 SQL Setup Scripts (Run in Snowsight Worksheets)
 │   ├── 01_rcm_data_setup.sql
 │   ├── 02_rcm_documents_setup.sql
 │   ├── 03_rcm_data_generation.sql
@@ -138,6 +135,11 @@ RCM_RAG_ORCH_DEMO/
 │   ├── 05_rcm_cortex_search.sql
 │   ├── 06_rcm_agent_setup.sql
 │   └── 07_rcm_native_agent_production.sql  ← Production agent + UDFs
+│
+├── 📁 Configuration (Reference)
+│   ├── environment.yml            # Snowflake manages dependencies
+│   ├── requirements_sis.txt       # Most pre-installed
+│   └── .streamlit/config.toml     # UI theme (optional)
 │
 └── 📁 Documentation
     ├── README.md
@@ -172,12 +174,16 @@ RCM_RAG_ORCH_DEMO/
 ### Prerequisites
 
 1. Snowflake account with Cortex enabled
-2. Python 3.9+
-3. Snowflake CLI installed
+2. Access to Snowsight (web UI)
+3. Role with CREATE privileges (or ACCOUNTADMIN)
 
-### Step 1: Execute SQL Scripts
+**No Python, CLI, or local tools required!**
 
-Run in Snowflake (in order):
+### Step 1: Execute SQL Scripts in Snowsight
+
+Open **Snowsight** → **Projects** → **Worksheets**
+
+Run in order (copy/paste each script):
 
 ```sql
 -- 1-6: Base setup (data, documents, semantic views, search)
@@ -188,21 +194,28 @@ sql_scripts/04_rcm_semantic_views.sql
 sql_scripts/05_rcm_cortex_search.sql
 sql_scripts/06_rcm_agent_setup.sql
 
--- 7: Production agent + UDFs
+-- 7: Production agent + UDFs ← CRITICAL
 sql_scripts/07_rcm_native_agent_production.sql
 ```
 
-### Step 2: Deploy Streamlit App
+### Step 2: Create Streamlit App in Snowsight
 
-```bash
-# Install CLI
-pip install snowflake-cli-labs
+**In Snowsight**:
 
-# Deploy
-./deploy_to_snowflake.sh
-```
+1. Go to **Projects** → **Streamlit**
+2. Click **+ Streamlit App**
+3. Configure:
+   - Name: `RCM_INTELLIGENCE_HUB`
+   - Database: `RCM_AI_DEMO`
+   - Schema: `RCM_SCHEMA`
+   - Warehouse: `RCM_INTELLIGENCE_WH`
+4. **Delete** default code
+5. **Paste** contents of `streamlit_app.py`
+6. Click **Run**
 
-**See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions**
+**App is live!** 🎉
+
+**See [QUICKSTART.md](QUICKSTART.md) for step-by-step screenshots and details**
 
 ---
 
@@ -224,13 +237,13 @@ pip install snowflake-cli-labs
 
 | Metric | Monthly Cost |
 |--------|-------------|
-| Snowflake compute | $200 |
-| Hosting | $0 (included in Snowflake) |
-| Data transfer | $0 (all internal) |
-| **Total** | **$200/month** |
+| Snowflake compute | $80 |
+| Cortex AI | $180 |
+| Storage | $10 |
+| **Total** | **$270/month** |
 
-**Compare to external hosting**: ~$400/month  
-**Savings**: 50% ($200/month = $2,400/year)
+**Compare to external hosting**: ~$500/month  
+**Savings**: 46% ($230/month = $2,760/year)
 
 ---
 
@@ -248,14 +261,19 @@ pip install snowflake-cli-labs
 
 ### Role-Based Access Control
 
+Configure in Snowsight:
+
 ```sql
 -- Grant app access to users
-GRANT USAGE ON STREAMLIT RCM_AI_DEMO.RCM_SCHEMA.rcm_intelligence_hub 
+GRANT USAGE ON STREAMLIT RCM_AI_DEMO.RCM_SCHEMA.RCM_INTELLIGENCE_HUB 
   TO ROLE BUSINESS_ANALYST;
 
 -- Grant agent access
 GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod 
   TO ROLE BUSINESS_ANALYST;
+
+-- Assign to users
+GRANT ROLE BUSINESS_ANALYST TO USER john.doe@quadax.com;
 ```
 
 ---
@@ -264,26 +282,32 @@ GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod
 
 ### 5-Minute Demo Flow
 
-1. **Show unified interface** (30 sec)
+1. **Show Snowsight deployment** (30 sec)
+   - Everything in browser, no CLI
+   - SQL scripts in worksheets
+   - Streamlit editor
+
+2. **Show unified interface** (30 sec)
    - One chat window - native Cortex Agent routes automatically
 
-2. **Analytics example** (1 min)
+3. **Analytics example** (1 min)
    - Query: "What is the clean claim rate by provider?"
    - Show: Auto-routing to Cortex Analyst, RCM metrics
 
-3. **Knowledge base example** (1 min)
+4. **Knowledge base example** (1 min)
    - Query: "How do I resolve a Code 45 denial?"
    - Show: RCM terminology enhancement (Code 45 → "charge exceeds fee schedule")
 
-4. **Cost tracking** (1 min)
+5. **Cost tracking** (1 min)
    - Enable debug panel
    - Show: Token counts, agent reasoning, cost estimate
 
-5. **Value proposition** (1.5 min)
+6. **Value proposition** (1 min)
    - Solves point solution fatigue
    - RCM domain intelligence (50+ terms)
    - 90% token reduction
    - HIPAA compliant
+   - Snowsight deployment (no DevOps)
 
 **Complete script**: [RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)
 
@@ -293,14 +317,18 @@ GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod
 
 ### Add Custom RCM Terms
 
-Edit `sql_scripts/07_rcm_native_agent_production.sql`:
+In Snowsight, edit and re-run `sql_scripts/07_rcm_native_agent_production.sql`:
 
 ```sql
 CREATE OR REPLACE FUNCTION ENHANCE_RCM_QUERY(...)
 AS $$
     terminology = {
         "your_term": "definition",
-        "quadax_specific": "your context"
+        "quadax_specific": "your context",
+        
+        # Existing 50+ terms
+        "remit": "remittance advice (ERA)",
+        # ...
     }
 $$;
 ```
@@ -319,15 +347,17 @@ Edit agent configuration in `07_rcm_native_agent_production.sql`:
 }
 ```
 
+Then recreate agent in Snowsight (copy/paste updated script).
+
 ---
 
 ## 🐛 Troubleshooting
 
-**Quick Fixes**:
+**Quick Fixes** (all in Snowsight):
 
-- **Agent not found**: Run `07_rcm_native_agent_production.sql`
+- **Agent not found**: Re-run `07_rcm_native_agent_production.sql`
 - **Search service error**: Verify `05_rcm_cortex_search.sql` executed
-- **Streamlit won't start**: Check warehouse is running, redeploy with `snow streamlit deploy --replace`
+- **Streamlit won't start**: Check warehouse is running, click Run again
 - **High token usage**: Reduce `max_results` in agent config
 
 **See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive troubleshooting**
@@ -337,21 +367,23 @@ Edit agent configuration in `07_rcm_native_agent_production.sql`:
 ## 📞 Support & Resources
 
 ### Documentation
-- **Quick Setup**: [QUICKSTART.md](QUICKSTART.md) (30 min)
-- **Full Deployment**: [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Quick Setup**: [QUICKSTART.md](QUICKSTART.md) (30 min in Snowsight)
+- **Full Deployment**: [DEPLOYMENT.md](DEPLOYMENT.md) (Snowsight guide)
 - **Architecture**: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Snowflake Resources
 - [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
 - [Cortex Agents](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
 - [Cortex Search](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview)
+- [Snowsight Overview](https://docs.snowflake.com/en/user-guide/ui-snowsight)
 
 ---
 
 ## ✅ Success Criteria
 
 **Deployment Success**:
-- ✅ App running in Snowflake (Snowsight → Projects → Streamlit)
+- ✅ All SQL scripts executed in Snowsight
+- ✅ App created in Snowsight Streamlit
 - ✅ Native agent routing correctly (test analytics & KB queries)
 - ✅ RCM terminology enhanced (test "remit", "Code 45", etc.)
 - ✅ Token usage < 5,000 per query average
@@ -361,6 +393,7 @@ Edit agent configuration in `07_rcm_native_agent_production.sql`:
 - ✅ User adoption and satisfaction
 - ✅ Cost savings achieved
 - ✅ Zero security incidents
+- ✅ No DevOps overhead (all in Snowsight)
 
 ---
 
@@ -372,6 +405,7 @@ Edit agent configuration in `07_rcm_native_agent_production.sql`:
 - ❌ 30k+ tokens per query
 - ❌ Models don't understand RCM terminology
 - ❌ Data security concerns
+- ❌ Complex deployment (CLI, Python, etc.)
 
 **After**:
 - ✅ Single Snowflake-native interface
@@ -379,23 +413,28 @@ Edit agent configuration in `07_rcm_native_agent_production.sql`:
 - ✅ 90%+ token reduction  
 - ✅ 50+ RCM terms automatically handled
 - ✅ **HIPAA-compliant (data never leaves Snowflake)**
-- ✅ 50% cost savings
+- ✅ 46% cost savings
+- ✅ **Snowsight deployment (no CLI, no DevOps)**
 - ✅ Enterprise-ready for production
 
-**Result**: Production-ready, HIPAA-compliant AI orchestration for healthcare revenue cycle management.
+**Result**: Production-ready, HIPAA-compliant AI orchestration for healthcare revenue cycle management - **deployed entirely in Snowsight**.
 
 ---
 
 ## 🚀 Get Started Now
 
-```bash
-# Quick start
-pip install snowflake-cli-labs
-./deploy_to_snowflake.sh
-```
+**In your browser**:
+
+1. Open Snowsight
+2. Copy/paste SQL scripts into worksheets
+3. Create Streamlit app
+4. Paste `streamlit_app.py` code
+5. Click Run
+
+**No CLI, no Python, no local setup!**
 
 **Questions?** See [QUICKSTART.md](QUICKSTART.md) or [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ---
 
-**Built for Quadax Healthcare RCM** | **Powered by Snowflake Cortex AI** | **December 2024**
+**Built for Quadax Healthcare RCM** | **Powered by Snowflake Cortex AI** | **100% Snowsight Deployment** | **December 2024**
