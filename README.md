@@ -364,14 +364,11 @@ RCM_RAG_ORCH_DEMO/
 │   ├── 07_rcm_native_agent_production.sql
 │   └── 08_streamlit_app.py        # Paste into Streamlit in Snowflake
 │
-├── unstructured_docs/             # Sample RCM documents
-│   ├── finance/
-│   ├── hr/
-│   ├── marketing/
-│   └── sales/
-│
-├── requirements_sis.txt
-└── environment.yml
+└── unstructured_docs/             # Sample RCM documents
+    ├── finance/
+    ├── hr/
+    ├── marketing/
+    └── sales/
 ```
 
 ---
