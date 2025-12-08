@@ -1,16 +1,22 @@
 # 🚀 Quick Start Guide - RCM Intelligence Hub
 
-## 5-Minute Setup
+**Get up and running in 5 minutes**
 
-### Step 1: Prerequisites ✅
+Choose your deployment approach:
 
-Before starting, ensure you have:
+## Prerequisites ✅
+
 - [ ] Snowflake account with Cortex enabled
-- [ ] Python 3.9 or higher installed
-- [ ] All 6 RCM setup scripts executed in Snowflake
-- [ ] Terminal access
+- [ ] Python 3.9+ installed
+- [ ] SQL scripts 01-06 executed in Snowflake
 
-### Step 2: Install Dependencies 📦
+---
+
+## Option 1: External Streamlit (Demo/POC)
+
+**Best for**: Technical demos, development
+
+### Install Dependencies
 
 ```bash
 # Navigate to the project directory
@@ -25,7 +31,7 @@ pip install -r requirements.txt
 Successfully installed streamlit-1.28.0 snowflake-connector-python-3.5.0 ...
 ```
 
-### Step 3: Configure Snowflake Credentials 🔐
+### Configure Credentials
 
 ```bash
 # Copy the example secrets file
@@ -54,7 +60,7 @@ role = "SF_INTELLIGENCE_DEMO"          # Leave as-is (or use your role)
 - Look at the URL: `https://app.snowflake.com/{orgname}-{accountname}/...`
 - Use format: `{orgname}-{accountname}`
 
-### Step 4: Run the Application 🎉
+### Run the App
 
 ```bash
 streamlit run app.py
@@ -72,9 +78,7 @@ streamlit run app.py
 
 ---
 
-## First Query - Test the System
-
-### Try These Sample Questions
+### Test with Sample Questions
 
 **Analytics (Cortex Analyst):**
 ```
