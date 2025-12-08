@@ -40,6 +40,14 @@ GRANT CREATE AGENT ON SCHEMA snowflake_intelligence.agents TO ROLE SF_INTELLIGEN
 GRANT USAGE ON INTEGRATION rcm_intelligence_external_access TO ROLE SF_INTELLIGENCE_DEMO;
 GRANT USAGE ON INTEGRATION rcm_email_notifications TO ROLE SF_INTELLIGENCE_DEMO;
 
+-- Grant Cortex Agent access per official Snowflake standards
+-- Use CORTEX_AGENT_USER for agent-only access (more restrictive)
+-- Or use CORTEX_USER for all Cortex features
+GRANT DATABASE ROLE SNOWFLAKE.CORTEX_AGENT_USER TO ROLE SF_INTELLIGENCE_DEMO;
+
+-- Grant warehouse usage for agent execution
+GRANT USAGE ON WAREHOUSE RCM_INTELLIGENCE_WH TO ROLE SF_INTELLIGENCE_DEMO;
+
 -- Switch to demo role for agent creation
 USE ROLE SF_INTELLIGENCE_DEMO;
 
@@ -157,7 +165,7 @@ $$
 FROM SPECIFICATION $$
 {
   "models": {
-    "orchestration": ""
+    "orchestration": "auto"
   },
   "instructions": {
     "response": "You are a healthcare revenue cycle management (RCM) analyst with deep expertise in claims processing, denial management, payer relations, and healthcare financial operations. You have access to comprehensive healthcare provider data, payer performance metrics, claims and denials data, and healthcare industry documents. When answering questions, focus on RCM-specific KPIs like clean claim rates, denial rates, net collection rates, days in A/R, appeal success rates, and payer performance metrics. Provide visualizations when possible and always relate insights back to revenue cycle optimization and healthcare financial performance. Use healthcare terminology throughout your responses.",
@@ -376,6 +384,10 @@ $$;
 -- ========================================================================
 -- AGENT VERIFICATION AND COMPLETION
 -- ========================================================================
+
+-- Grant USAGE privilege on the agent to the demo role
+GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent 
+  TO ROLE SF_INTELLIGENCE_DEMO;
 
 -- Show created agent
 SHOW AGENTS IN SCHEMA snowflake_intelligence.agents;

@@ -1,4 +1,0 @@
----
-alwaysApply: true
----
-When building cortex agents, refer to this repo for best practices and instructions: https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/best-practices-to-building-cortex-agents/best-practices-to-building-cortex-agents.md

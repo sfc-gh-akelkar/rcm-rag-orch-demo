@@ -1,123 +1,383 @@
-# Healthcare Revenue Cycle Management AI Demo
+# Getting Started with Healthcare RCM Intelligence using Cortex Agents
 
-**Production-Ready AI Orchestration with Streamlit in Snowflake**
+Build an intelligent healthcare revenue cycle management assistant that combines analytics and document search using Snowflake Cortex AI.
 
 [![Snowflake](https://img.shields.io/badge/Snowflake-Cortex%20AI-29B5E8)](https://www.snowflake.com/en/data-cloud/cortex/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-in%20Snowflake-FF4B4B)](https://streamlit.io/)
-[![Deployment](https://img.shields.io/badge/Deploy-Snowsight-blue)](https://docs.snowflake.com/en/user-guide/ui-snowsight)
 
 ---
 
-## 🚨 The Problem: AI Point Solution Fatigue
+## Overview
 
-### Real-World Challenges from Quadax Healthcare RCM
+Modern healthcare organizations manage two critical types of data:
+- **Structured Data**: Claims, denials, payer performance, provider metrics (rows and columns)
+- **Unstructured Data**: Policies, procedures, contracts, compliance documents (text, PDFs)
 
-**Quadax**, a leading healthcare Revenue Cycle Management (RCM) company, faced critical challenges with their AI initiatives:
+The ability to analyze both types seamlessly is crucial for Revenue Cycle Management (RCM) teams to understand performance, improve processes, and optimize revenue.
 
-#### 1. **Point Solution Fatigue** 😫
-- **Problem**: Built separate AI prototypes for different use cases (analytics, document search, chatbots)
-- **Impact**: Users forced to switch between multiple tools, losing context and productivity
-- **Pain Point**: "Which tool do I use for this question?" - constant decision fatigue
-- **Business Cost**: Reduced adoption, duplicate work, siloed insights
+In this quickstart, you'll learn how to build an **RCM Intelligence Hub** that leverages Snowflake's Cortex Agents to orchestrate across both structured and unstructured data sources, providing a unified natural language interface for RCM analytics.
 
-#### 2. **Domain Expertise Gap** 🏥
-- **Problem**: General LLMs don't understand healthcare terminology ("remit", "CO-45", "clean claim", "A/R aging")
-- **Impact**: Models provide generic answers or misinterpret RCM-specific questions
-- **Example**: User asks "Show me remits for Anthem" → Model doesn't know "remits" = "remittance advice (ERA)"
-- **Business Cost**: Inaccurate insights, user frustration, manual clarification needed
+### What is Snowflake Cortex AI?
 
-#### 3. **Uncontrolled Token Costs** 💸
-- **Problem**: Sending 30,000+ tokens per query to LLMs (entire document sets in context)
-- **Impact**: Costs spiraling out of control, no visibility into spend
-- **Example**: Single query costs $0.18 (30k tokens × $6/M) vs. target of $0.006
-- **Business Cost**: 30x higher than needed, blocking production deployment
+Snowflake Cortex AI allows you to turn your data into intelligent insights with AI next to your data. You can access industry-leading LLMs, analyze data, and build agents — all within Snowflake's secure perimeter.
 
-#### 4. **HIPAA Compliance Complexity** 🔒
-- **Problem**: PHI (Protected Health Information) in claims data cannot leave secure perimeter
-- **Impact**: External AI services require separate BAAs, data transfer audits, risk assessments
-- **Pain Point**: Legal/compliance approval takes 6+ months, blocks rapid innovation
-- **Business Cost**: Delayed time-to-value, increased compliance overhead
+#### Cortex Analyst
+- Converts natural language questions into SQL queries
+- Uses semantic models (YAML) to understand your business context
+- Achieves 90%+ accuracy through domain-specific semantic definitions
+- Handles complex analytical questions about RCM metrics
 
-#### 5. **Infrastructure Complexity** ⚙️
-- **Problem**: Managing external hosting, credentials, networking, monitoring for AI applications
-- **Impact**: DevOps overhead, security vulnerabilities, deployment bottlenecks
-- **Example**: Need to manage AWS/Azure hosting + Snowflake + API keys + monitoring stack
-- **Business Cost**: Engineering time diverted from features to infrastructure
+#### Cortex Search
+- Hybrid search combining semantic and keyword approaches
+- Leverages advanced embedding models (e5-base-v2)
+- Searches across unstructured documents with exceptional accuracy
+- Returns contextually relevant results with relevance scores
 
----
+#### Cortex Agents
+- Orchestrates across both structured and unstructured data sources
+- Plans tasks, uses tools, reflects on results, and generates responses
+- Seamlessly combines Cortex Analyst and Cortex Search
+- Manages conversation context through threads
+- Optimized for single API call integration per the [official documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
 
-## 💡 Why Snowflake? The Value Proposition
+These capabilities work together to:
+1. Search through RCM policies and procedures for relevant context
+2. Convert natural language to SQL for claims and denials analytics
+3. Combine insights from both structured and unstructured sources
+4. Provide natural language interactions with your RCM data
 
-### **Single Platform, Zero Data Movement, Native AI**
+### What You'll Learn
 
-Building this solution **inside Snowflake** solves all five problems simultaneously:
+- How to set up an RCM intelligence database in Snowflake
+- How to create semantic models for claims and denials data
+- How to configure Cortex Search services for RCM documents
+- How to build a Cortex Agent with multiple tools following [Snowflake standards](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
+- How to create a Streamlit in Snowflake interface for RCM analytics
+- How to implement RCM domain intelligence with custom UDFs
 
-| Challenge | Traditional Approach | Snowflake Solution | Impact |
-|-----------|---------------------|-------------------|--------|
-| **Point Solution Fatigue** | Multiple separate AI tools | Single native Cortex Agent orchestrating all tools | ✅ One unified interface |
-| **Domain Expertise** | Generic LLMs, manual prompt engineering | RCM terminology UDFs + semantic layer | ✅ 50+ terms handled automatically |
-| **Token Costs** | 30k+ tokens per query | Native orchestration + smart retrieval | ✅ 90% cost reduction (1.5k-2.5k tokens) |
-| **HIPAA Compliance** | Separate BAAs, data transfer audits | Data never leaves Snowflake perimeter | ✅ Single BAA, zero data movement |
-| **Infrastructure** | Manage external hosting + integrations | Snowflake manages everything | ✅ Zero DevOps overhead |
+### What You'll Build
 
-### **Specific Value Delivered**
+A production-ready application that enables RCM teams to:
+- Ask natural language questions about claims and denials analytics
+- Search through RCM policies, procedures, and compliance documents
+- Get AI-powered insights combining both structured and unstructured data
+- Access domain-specific RCM terminology understanding (50+ terms)
 
-#### 🎯 **User Experience**
-- **Before**: "Should I use the analytics tool or the document search?"
-- **After**: "Just ask in natural language" - agent routes automatically
-- **Result**: 5x faster insights, zero training needed
+### Prerequisites
 
-#### 💰 **Cost Optimization**
-- **Before**: $0.18 per query (30,000 tokens)
-- **After**: $0.006 per query (1,500-2,500 tokens)
-- **Result**: 97% cost reduction = $230/month savings ($2,760/year)
-
-#### 🏥 **Healthcare Specificity**
-- **Before**: "What's a CO-45?" - model doesn't know
-- **After**: "CO-45 = charge exceeds fee schedule" - automatically enhanced
-- **Result**: Accurate RCM insights without manual context
-
-#### 🔐 **Security & Compliance**
-- **Before**: 6+ months for separate AI vendor BAA approval
-- **After**: Covered by existing Snowflake BAA, data stays internal
-- **Result**: Deploy in 30 minutes, production-ready for HIPAA
-
-#### 🚀 **Time to Value**
-- **Before**: Weeks to deploy (infra setup, credentials, networking, monitoring)
-- **After**: 30 minutes in Snowsight (copy/paste SQL + Streamlit code)
-- **Result**: Business users can deploy without DevOps team
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) installed
+  > Download the [Git repository](https://github.com/YOUR_REPO/rcm-intelligence-hub)
+- A [Snowflake account](https://signup.snowflake.com/) with a role that has sufficient privileges to create databases, schemas, tables, stages, and agents
+- **Cortex Agents Access**: You will need access to Snowflake Cortex AI, including:
+  - **Cortex Agents** (GA as of Nov 2024)
+  - **Cortex Search**
+  - **Cortex Analyst**
 
 ---
 
-## 📊 By The Numbers
+## Setup Data
 
-### **Production Impact at Quadax**
+**Step 1.** In Snowsight, create a SQL Worksheet for each script below and execute them **in order**:
 
+### 1. Database & Infrastructure Setup
+Open `sql_scripts/01_rcm_data_setup.sql` and execute all statements. This will:
+- Create the `RCM_AI_DEMO` database and `RCM_SCHEMA` schema
+- Create the `RCM_INTELLIGENCE_WH` warehouse
+- Set up roles and permissions
+- Create internal stage for documents
+- Create dimension tables (providers, payers, procedures, etc.)
+
+### 2. Document Loading
+Open `sql_scripts/02_rcm_documents_setup.sql` and execute all statements. This will:
+- Parse RCM documents (policies, procedures, contracts) using Cortex Document AI
+- Create `RCM_PARSED_CONTENT` table with embeddings
+- Load ~40+ documents across Finance, HR, Marketing, Sales categories
+
+### 3. Data Generation
+Open `sql_scripts/03_rcm_data_generation.sql` and execute all statements. This will:
+- Generate 50,000+ synthetic claims records
+- Generate 7,500+ denial records with realistic patterns
+- Create payment and encounter records
+- Populate fact tables for analytics
+
+### 4. Semantic Views for Cortex Analyst
+Open `sql_scripts/04_rcm_semantic_views.sql` and execute all statements. This will:
+- Create `CLAIMS_PROCESSING_VIEW` semantic view (for structured analytics)
+- Create `DENIALS_MANAGEMENT_VIEW` semantic view (for denials analytics)
+- Define metrics, dimensions, and relationships for Text-to-SQL
+
+### 5. Cortex Search Services
+Open `sql_scripts/05_rcm_cortex_search.sql` and execute all statements. This will:
+- Create 5 Cortex Search services:
+  - `RCM_FINANCE_DOCS_SEARCH` (financial policies, contracts)
+  - `RCM_OPERATIONS_DOCS_SEARCH` (operational procedures)
+  - `RCM_COMPLIANCE_DOCS_SEARCH` (compliance, audit docs)
+  - `RCM_STRATEGY_DOCS_SEARCH` (strategic plans)
+  - `RCM_KNOWLEDGE_BASE_SEARCH` (comprehensive search)
+
+### 6. Cortex Agent Setup (Basic)
+Open `sql_scripts/06_rcm_agent_setup.sql` and execute all statements. This will:
+- Create external access integrations
+- Create helper UDFs and stored procedures
+- Create the basic `RCM_Healthcare_Agent` with 10 tools:
+  - 2 Cortex Analyst tools (Claims, Denials)
+  - 5 Cortex Search tools (Finance, Ops, Compliance, Strategy, Knowledge Base)
+  - 3 Custom tools (Document URLs, Email alerts, Web scraping)
+
+### 7. Production Agent with RCM Intelligence (Optional but Recommended)
+Open `sql_scripts/07_rcm_native_agent_production.sql` and execute all statements. This creates:
+- Production-ready agent with RCM terminology UDFs
+- Enhanced orchestration instructions
+- Cost optimization features
+- 50+ healthcare RCM terms (remit, clean claim, A/R aging, CO-45, etc.)
+
+**Verification:** Run the verification queries at the end of each script to ensure successful setup.
+
+---
+
+## Create Streamlit in Snowflake App
+
+Now that your data and agent are configured, create the interactive Streamlit interface.
+
+**Step 1.** In Snowsight, navigate to **Projects** » **Streamlit**
+
+**Step 2.** Click **+ Streamlit App**
+
+**Step 3.** Configure the app:
+- **App name**: `RCM_INTELLIGENCE_HUB`
+- **App location**:
+  - Warehouse: `RCM_INTELLIGENCE_WH`
+  - Database: `RCM_AI_DEMO`
+  - Schema: `RCM_SCHEMA`
+
+**Step 4.** Delete the default code in the editor
+
+**Step 5.** Copy and paste the entire contents of `08_streamlit_app.py` into the editor
+
+**Step 6.** Click **Run** (top right)
+
+The app will launch in the preview pane. You should see the RCM Intelligence Hub interface with:
+- Chat input for natural language questions
+- Sample question buttons
+- Session statistics
+- Debug panel toggle (for viewing agent reasoning)
+
+---
+
+## Test the Application
+
+Try these sample questions to verify the agent is working correctly:
+
+### Analytics Questions (Cortex Analyst)
 ```
-User Productivity:     5x faster insights (no tool-switching)
-Cost Savings:          97% reduction ($2,760/year)
-Token Usage:           90% reduction (30k → 1.5k-2.5k)
-Time to Deploy:        95% reduction (weeks → 30 minutes)
-Compliance Approval:   99% reduction (6 months → 0 days)
-DevOps Overhead:       100% reduction (managed infrastructure)
-User Training:         100% reduction (natural language)
+"What is the clean claim rate by healthcare provider?"
+"Which payers have the highest denial rates?"
+"Show me revenue trends for the last quarter"
 ```
 
-### **Technical Performance**
-
+### Knowledge Base Questions (Cortex Search)
 ```
-Query Response Time:   1-3 seconds (in-Snowflake processing)
-Accuracy:              95%+ (with RCM terminology)
-Concurrent Users:      100+ (auto-scaling warehouses)
-Uptime:                99.9% (Snowflake SLA)
-Data Security:         Zero data movement (HIPAA compliant)
+"How do I resolve a Code 45 denial?"
+"What are our HIPAA compliance requirements for claims processing?"
+"Find our vendor contract terms"
+```
+
+### RCM Terminology Questions (Custom UDFs + Agent)
+```
+"Show me remits for Anthem"
+"What's our write-off trend this quarter?"
+"Explain CO-45 denials and appeal procedures"
+```
+
+### Multi-Tool Questions (Agent Orchestration)
+```
+"Which payers have the highest denial rates and what do our appeal procedures say about appeals?"
+"What's our clean claim rate and what policies govern claim submissions?"
+```
+
+**Expected Behavior:**
+- Analytics questions return data visualizations and metrics
+- Knowledge questions return document excerpts with citations
+- RCM terminology is automatically enhanced (e.g., "remit" → "remittance advice ERA")
+- Multi-tool questions combine insights from both sources
+- Debug panel (if enabled) shows which tools were used
+
+---
+
+## Snowflake Intelligence (Optional)
+
+You can also interact with your agent directly in Snowflake Intelligence without using the Streamlit app.
+
+**Step 1.** In Snowsight, click **AI & ML** » **Snowflake Intelligence**
+
+**Step 2.** Select your agent: `RCM_Healthcare_Agent` (or `RCM_Healthcare_Agent_Prod`)
+
+**Step 3.** Ask questions directly in the chat interface
+
+Snowflake Intelligence provides:
+- Built-in chat UI
+- Automatic visualizations
+- Source citations
+- Thread management
+- No code required
+
+---
+
+## Agent REST API (Advanced)
+
+For custom applications, you can call the Cortex Agent via REST API following the [official pattern](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents/rest-api).
+
+### Authentication
+
+**Step 1.** Create a Programmatic Access Token (PAT):
+- In Snowsight, click your profile (bottom left) » **Settings** » **Authentication**
+- Under **Programmatic access tokens**, click **Generate new token**
+- Select **Single Role** and choose `SF_INTELLIGENCE_DEMO`
+- Copy and save the token (you won't see it again)
+
+### Local Testing (Optional)
+
+If you want to test the REST API locally:
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd RCM_RAG_ORCH_DEMO
+
+# Set up Python environment
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements_sis.txt
+
+# Set environment variables and run
+CORTEX_AGENT_PAT=<your-pat> \
+CORTEX_AGENT_HOST=<your-account-url> \
+CORTEX_AGENT_DATABASE="SNOWFLAKE_INTELLIGENCE" \
+CORTEX_AGENT_SCHEMA="AGENTS" \
+CORTEX_AGENT_AGENT="RCM_Healthcare_Agent" \
+streamlit run 08_streamlit_app.py
 ```
 
 ---
 
-## 🎯 The Solution: Unified RCM Intelligence Hub
+## Architecture Overview
 
-**Production-ready Snowflake Intelligence** solution featuring:
+```
+┌─────────────────────────────────────────────────┐
+│  SNOWFLAKE ACCOUNT (Zero Data Movement)         │
+│                                                  │
+│  ┌────────────────────────────────────────────┐ │
+│  │  Streamlit in Snowflake (UI)               │ │
+│  │  • Chat interface                          │ │
+│  │  • Debug panel                             │ │
+│  │  • Session management                      │ │
+│  └──────────────┬─────────────────────────────┘ │
+│                 │                                │
+│                 ▼                                │
+│  ┌────────────────────────────────────────────┐ │
+│  │  Cortex Agent (Orchestration)              │ │
+│  │  • Planning & Reflection                   │ │
+│  │  • Tool Selection                          │ │
+│  │  • RCM Terminology Enhancement             │ │
+│  └──────────────┬─────────────────────────────┘ │
+│                 │                                │
+│         ┌───────┴────────┬───────────┐          │
+│         ▼                ▼           ▼          │
+│  ┌──────────┐    ┌──────────┐  ┌─────────┐     │
+│  │ Cortex   │    │ Cortex   │  │ Custom  │     │
+│  │ Analyst  │    │  Search  │  │  UDFs   │     │
+│  │ (2 tools)│    │ (5 tools)│  │(3 tools)│     │
+│  └────┬─────┘    └────┬─────┘  └─────────┘     │
+│       │               │                         │
+│       ▼               ▼                         │
+│  ┌────────────────────────────────────────────┐ │
+│  │  Data Layer                                │ │
+│  │  • 2 Semantic Views (Claims, Denials)      │ │
+│  │  • 5 Search Services (Docs indexed)        │ │
+│  │  • 50,000+ records (Claims, denials, etc.) │ │
+│  └────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────┘
+```
+
+**Key Benefits:**
+- ✅ PHI never leaves Snowflake (HIPAA compliant)
+- ✅ Native RBAC (no credential management)
+- ✅ Auto-scaling compute
+- ✅ Single Snowflake BAA
+- ✅ Built-in audit trail
+
+---
+
+## Conclusion and Resources
+
+Congratulations! You've successfully built an RCM Intelligence Hub using Snowflake Cortex Agents. This application demonstrates the power of:
+- Unified interface for structured and unstructured data
+- Automatic multi-tool orchestration
+- Domain-specific RCM intelligence (50+ terms)
+- Zero data movement architecture (HIPAA compliant)
+- Production-ready deployment in Snowflake
+
+### What You Learned
+
+- **Cortex Agents**: How to build agents following [official Snowflake standards](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
+- **Cortex Analyst**: How to create semantic views for Text-to-SQL analytics
+- **Cortex Search**: How to index and search unstructured RCM documents
+- **Custom Tools**: How to extend agents with domain-specific UDFs
+- **Streamlit in Snowflake**: How to build interactive UI with native integration
+
+### What You Built
+
+| Component | Count | Purpose |
+|-----------|-------|---------|
+| **Semantic Views** | 2 | Claims and Denials analytics |
+| **Search Services** | 5 | Finance, Ops, Compliance, Strategy, Knowledge Base |
+| **Agent Tools** | 10 | 2 Analyst + 5 Search + 3 Custom |
+| **RCM Terms** | 50+ | Automatic terminology enhancement |
+| **Records** | 50,000+ | Synthetic claims, denials, payments |
+
+### Related Resources
+
+- [Snowflake Cortex Agents Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
+- [Getting Started with Cortex Agents (Snowflake Labs)](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/getting-started-with-cortex-agents/getting-started-with-cortex-agents.md)
+- [Cortex Search Overview](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview)
+- [Cortex Analyst Overview](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst)
+- [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
+- [Snowflake Intelligence](https://docs.snowflake.com/en/user-guide/snowflake-cortex/snowflake-intelligence)
+
+---
+
+## Project Structure
+
+```
+RCM_RAG_ORCH_DEMO/
+│
+├── sql_scripts/                    # Execute in numbered order
+│   ├── 01_rcm_data_setup.sql
+│   ├── 02_rcm_documents_setup.sql
+│   ├── 03_rcm_data_generation.sql
+│   ├── 04_rcm_semantic_views.sql
+│   ├── 05_rcm_cortex_search.sql
+│   ├── 06_rcm_agent_setup.sql
+│   └── 07_rcm_native_agent_production.sql
+│
+├── 08_streamlit_app.py            # Paste into Streamlit in Snowflake
+│
+├── unstructured_docs/             # Sample RCM documents
+│   ├── finance/
+│   ├── hr/
+│   ├── marketing/
+│   └── sales/
+│
+└── docs/                          # Reference documentation
+    ├── ARCHITECTURE.md
+    ├── DEPLOYMENT.md
+    ├── DEMO_HIGHLIGHTS.md
+    └── SNOWFLAKE_STANDARDS_UPDATE.md
+```
+
+---
+
+**Built for Healthcare RCM** | **Powered by Snowflake Cortex AI** | **December 2024**
 
 ### **Core Capabilities**
 

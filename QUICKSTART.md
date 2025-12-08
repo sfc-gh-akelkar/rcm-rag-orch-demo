@@ -1,327 +1,228 @@
-# 🚀 Quick Start Guide - RCM Intelligence Hub
+# RCM Intelligence Hub - Quick Start Guide
 
-**Get your Snowflake-native RCM AI running in 30 minutes**
-
----
-
-## Prerequisites ✅
-
-- [ ] Snowflake account with Cortex enabled
-- [ ] Access to Snowsight (web UI)
-- [ ] Role with privileges to create databases, agents, and Streamlit apps
-
-**No Python or CLI installation required!** Everything is done in Snowsight.
+**Get running in 30 minutes using only Snowsight (no CLI required)**
 
 ---
 
-## Step 1: Execute SQL Setup
+## Prerequisites
 
-Log into **Snowsight** and run these scripts in order:
+✅ Snowflake account with Cortex AI access (Agents, Search, Analyst)  
+✅ Role with privileges to create databases, schemas, warehouses, agents  
+✅ Web browser access to Snowsight
 
-### Open a SQL Worksheet
+**No local setup required!** Everything runs in Snowsight.
 
-1. Go to **Snowsight** → **Projects** → **Worksheets**
-2. Click **+ Worksheet** (create new)
-3. Run each script below in sequence
+---
 
-### Execute Scripts
+## Step-by-Step Setup
 
-```sql
--- 1. Infrastructure (database, schema, warehouse, role)
--- Copy/paste: sql_scripts/01_rcm_data_setup.sql
--- Run the entire script
+### Step 1: Execute SQL Scripts (20 minutes)
 
--- 2. Load RCM documents into database
--- Copy/paste: sql_scripts/02_rcm_documents_setup.sql
--- Run the entire script
+Open **Snowsight** → **Projects** → **Worksheets**
 
--- 3. Generate synthetic RCM data (50k+ records)
--- Copy/paste: sql_scripts/03_rcm_data_generation.sql
--- Run the entire script
+For each script below:
+1. Create a new SQL worksheet
+2. Copy/paste the script contents
+3. Execute all statements (Ctrl+Enter or click ▶ Run All)
+4. Verify success with the verification queries at the end
 
--- 4. Create semantic views for Cortex Analyst
--- Copy/paste: sql_scripts/04_rcm_semantic_views.sql
--- Run the entire script
+**Execute in this exact order:**
 
--- 5. Create Cortex Search services
--- Copy/paste: sql_scripts/05_rcm_cortex_search.sql
--- Run the entire script
+#### 1️⃣ Database & Infrastructure
+File: `sql_scripts/01_rcm_data_setup.sql`
+- Creates database, schema, warehouse
+- Sets up roles and permissions
+- Creates dimension tables
 
--- 6. Basic agent (optional reference)
--- Copy/paste: sql_scripts/06_rcm_agent_setup.sql
--- Run the entire script
+**Verify:** Should see "RCM Infrastructure Setup Complete"
 
--- 7. Production agent + RCM UDFs ← CRITICAL
--- Copy/paste: sql_scripts/07_rcm_native_agent_production.sql
--- Run the entire script
+#### 2️⃣ Document Loading  
+File: `sql_scripts/02_rcm_documents_setup.sql`
+- Parses RCM documents with Cortex Document AI
+- Creates parsed content table
+- Loads ~40 documents
+
+**Verify:** `SELECT COUNT(*) FROM rcm_parsed_content;` → Should return ~40
+
+#### 3️⃣ Data Generation
+File: `sql_scripts/03_rcm_data_generation.sql`
+- Generates 50,000 claims
+- Generates 7,500 denials
+- Creates payment records
+
+**Verify:** `SELECT COUNT(*) FROM claims_fact;` → Should return 50,000
+
+#### 4️⃣ Semantic Views
+File: `sql_scripts/04_rcm_semantic_views.sql`
+- Creates Claims Processing semantic view
+- Creates Denials Management semantic view
+
+**Verify:** `SHOW SEMANTIC VIEWS;` → Should show 2 views
+
+#### 5️⃣ Cortex Search Services
+File: `sql_scripts/05_rcm_cortex_search.sql`
+- Creates 5 search services for RCM documents
+
+**Verify:** Search services listed in `INFORMATION_SCHEMA.CORTEX_SEARCH_SERVICES`
+
+#### 6️⃣ Agent Setup
+File: `sql_scripts/06_rcm_agent_setup.sql`
+- Creates helper UDFs and procedures
+- Creates RCM_Healthcare_Agent with 10 tools
+
+**Verify:** `SHOW AGENTS;` → Should list RCM_Healthcare_Agent
+
+#### 7️⃣ Production Agent (Recommended)
+File: `sql_scripts/07_rcm_native_agent_production.sql`
+- Creates production agent with RCM terminology
+- Adds 50+ healthcare term enhancements
+
+**Verify:** Agent shows in `SNOWFLAKE_INTELLIGENCE.AGENTS` schema
+
+---
+
+### Step 2: Create Streamlit App (5 minutes)
+
+In **Snowsight**:
+
+1. Navigate to **Projects** → **Streamlit**
+
+2. Click **+ Streamlit App**
+
+3. Configure:
+   - **Name**: `RCM_INTELLIGENCE_HUB`
+   - **Location**:
+     - Warehouse: `RCM_INTELLIGENCE_WH`
+     - Database: `RCM_AI_DEMO`
+     - Schema: `RCM_SCHEMA`
+
+4. **Delete** the default template code
+
+5. Open `08_streamlit_app.py` in your repository
+
+6. **Copy** entire contents → **Paste** into Streamlit editor
+
+7. Click **Run** (top right corner)
+
+**Expected Result:** App launches in preview pane with chat interface
+
+---
+
+### Step 3: Test the App (5 minutes)
+
+Try these sample questions:
+
+#### Analytics (Cortex Analyst)
 ```
-
-### Verify Setup
-
-Run in a SQL worksheet:
-
-```sql
--- Check database & schema
-SHOW DATABASES LIKE 'RCM_AI_DEMO';
-SHOW SCHEMAS IN DATABASE RCM_AI_DEMO;
-
--- Check tables
-SHOW TABLES IN SCHEMA RCM_AI_DEMO.RCM_SCHEMA;
--- Should see: 14 tables
-
--- Check semantic views
-SHOW SEMANTIC VIEWS IN SCHEMA RCM_AI_DEMO.RCM_SCHEMA;
--- Should see: 2 views (CLAIMS_PROCESSING_VIEW, DENIALS_MANAGEMENT_VIEW)
-
--- Check search services
-SHOW CORTEX SEARCH SERVICES IN SCHEMA RCM_AI_DEMO.RCM_SCHEMA;
--- Should see: 5 services
-
--- Check production agent
-SHOW AGENTS IN SCHEMA SNOWFLAKE_INTELLIGENCE.AGENTS;
--- Should see: RCM_Healthcare_Agent_Prod
-
--- Check UDFs
-SHOW FUNCTIONS LIKE 'ENHANCE%' IN SCHEMA RCM_AI_DEMO.RCM_SCHEMA;
--- Should see: ENHANCE_RCM_QUERY, GET_ENHANCED_QUERY, etc.
+What is the clean claim rate by provider?
 ```
+**Expected:** Table/chart with provider performance metrics
 
-**✅ If all checks pass, you're ready for Step 2!**
+#### Knowledge Base (Cortex Search)
+```
+How do I resolve a Code 45 denial?
+```
+**Expected:** Document excerpts with denial resolution procedures
 
----
+#### RCM Terminology (Agent Intelligence)
+```
+Show me remits for Anthem
+```
+**Expected:** Query auto-enhanced ("remit" → "remittance advice ERA")
 
-## Step 2: Create Streamlit App in Snowsight
-
-### Navigate to Streamlit
-
-1. In **Snowsight**, go to **Projects** → **Streamlit**
-2. Click **+ Streamlit App** (top right)
-
-### Configure the App
-
-**App Settings**:
-- **App title**: `RCM Intelligence Hub`
-- **App location**:
-  - Database: `RCM_AI_DEMO`
-  - Schema: `RCM_SCHEMA`
-  - Warehouse: `RCM_INTELLIGENCE_WH`
-
-### Add App Code
-
-1. The Snowsight editor will open
-2. **Delete** the default template code
-3. **Copy/paste** the entire contents of `streamlit_app.py` from this repo
-4. Click **Run** (top right)
-
-### Add Dependencies (Optional)
-
-If the app needs additional packages:
-
-1. Click **Packages** (left sidebar in Streamlit editor)
-2. Add these packages:
-   ```
-   snowflake-snowpark-python
-   ```
-
-Most dependencies are already included in Snowflake's Streamlit environment.
+#### Multi-Tool (Agent Orchestration)
+```
+Which payers have the highest denial rates and what do our appeal procedures say?
+```
+**Expected:** Combined answer from both analytics and documents
 
 ---
 
-## Step 3: Test the App
+## Troubleshooting
 
-**Access the app**:
-- The app should now be running in Snowsight
-- Click **Run** if not already started
+### Agent not found
+**Error:** "Agent SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent does not exist"
 
-**Test queries**:
+**Fix:** Make sure you executed `06_rcm_agent_setup.sql` completely
 
-1. **Analytics**: 
-   ```
-   What is the clean claim rate by provider?
-   ```
-   → Should show metrics from Cortex Analyst
+### Search service not ready
+**Error:** "Cortex Search service not found"
 
-2. **Knowledge Base**: 
-   ```
-   How do I resolve a Code 45 denial?
-   ```
-   → Should search documents and cite sources
+**Fix:** 
+1. Check `SHOW CORTEX SEARCH SERVICES;`
+2. Ensure `05_rcm_cortex_search.sql` completed successfully
+3. Wait 1-2 minutes for services to initialize
 
-3. **RCM Terminology**: 
-   ```
-   Show me remits for Anthem
-   ```
-   → Should enhance "remits" to "remittance advice (ERA)"
+### Streamlit app errors
+**Error:** Module import errors
 
----
+**Fix:**
+1. Ensure warehouse is running: `ALTER WAREHOUSE RCM_INTELLIGENCE_WH RESUME;`
+2. Check you're using the correct database/schema in app configuration
 
-## ✅ Verification Checklist
+### Permission errors
+**Error:** "Insufficient privileges"
 
-After deployment:
-
-- [ ] App runs in Snowsight
-- [ ] Test analytics query works (returns metrics)
-- [ ] Test knowledge base query works (returns documents)
-- [ ] RCM terminology enhancement working (terms detected)
-- [ ] Debug panel shows agent reasoning (enable in sidebar)
-- [ ] No errors in chat responses
-
----
-
-## 🎉 Success!
-
-Your RCM Intelligence Hub is now running in Snowflake with:
-- ✅ Native Cortex Agent orchestration
-- ✅ RCM domain intelligence (50+ terms)
-- ✅ Zero data movement (HIPAA compliant)
-- ✅ Auto-scaling compute
+**Fix:**
+1. Ensure you're using `ACCOUNTADMIN` role for setup scripts
+2. Grant usage on agent:
+```sql
+GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent 
+  TO ROLE YOUR_ROLE;
+```
 
 ---
 
 ## Next Steps
 
-### Enable Debug Mode
-Sidebar → Check "Show Debug/Agent Info"
-- See agent reasoning
-- View token counts
-- Track costs
-
-### Share with Users
-
-**Grant Access**:
-
+### Share with Team
 ```sql
 -- Grant app access to users
 GRANT USAGE ON STREAMLIT RCM_AI_DEMO.RCM_SCHEMA.RCM_INTELLIGENCE_HUB 
   TO ROLE BUSINESS_ANALYST;
 
--- Grant agent access
-GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod 
+GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent 
   TO ROLE BUSINESS_ANALYST;
 
--- Grant to specific user
-GRANT ROLE BUSINESS_ANALYST TO USER john.doe@quadax.com;
+GRANT ROLE BUSINESS_ANALYST TO USER john.doe@company.com;
 ```
 
-**Share Link**:
-1. In Snowsight, open your Streamlit app
-2. Click **Share** (top right)
-3. Copy the link and send to users
+### Try Snowflake Intelligence
+1. Go to **AI & ML** → **Snowflake Intelligence**
+2. Select `RCM_Healthcare_Agent`
+3. Ask questions directly (no Streamlit app needed)
 
-### Customize RCM Terms
-
-Edit and re-run `sql_scripts/07_rcm_native_agent_production.sql`:
-
-```sql
-CREATE OR REPLACE FUNCTION ENHANCE_RCM_QUERY(query STRING)
-AS $$
-def enhance_query(query):
-    terminology = {
-        # Add your custom terms
-        "your_term": "definition",
-        "quadax_specific": "your context",
-        
-        # Existing 50+ terms
-        "remit": "remittance advice (ERA)",
-        # ...
-    }
-$$;
-```
-
-Then refresh your Streamlit app to use updated UDF.
+### Customize the Agent
+- Edit orchestration instructions in Snowsight (AI & ML → Agents → Edit)
+- Add more RCM terminology in `07_rcm_native_agent_production.sql`
+- Adjust search service `max_results` for cost optimization
 
 ---
 
-## 🐛 Troubleshooting
+## Success Criteria
 
-### SQL Setup Issues
-
-**Agent not found**:
-```sql
--- Verify agent exists
-SHOW AGENTS IN SCHEMA SNOWFLAKE_INTELLIGENCE.AGENTS;
-
--- If missing, re-run:
--- sql_scripts/07_rcm_native_agent_production.sql
-```
-
-**UDF not found**:
-```sql
--- Verify UDFs exist
-SHOW FUNCTIONS LIKE 'ENHANCE%' IN SCHEMA RCM_AI_DEMO.RCM_SCHEMA;
-
--- If missing, re-run:
--- sql_scripts/07_rcm_native_agent_production.sql
-```
-
-**Warehouse suspended**:
-```sql
--- Resume warehouse
-ALTER WAREHOUSE RCM_INTELLIGENCE_WH RESUME;
-
--- Enable auto-resume
-ALTER WAREHOUSE RCM_INTELLIGENCE_WH SET AUTO_RESUME = TRUE;
-```
-
-### Streamlit App Issues
-
-**App won't start**:
-1. Check warehouse is running: `SHOW WAREHOUSES LIKE 'RCM_INTELLIGENCE_WH';`
-2. Verify app location (Database: `RCM_AI_DEMO`, Schema: `RCM_SCHEMA`)
-3. Click **Run** again in Snowsight
-
-**Import errors**:
-- Most packages are pre-installed in Snowflake's Streamlit
-- If needed, add to **Packages** in left sidebar
-
-**Permission errors**:
-```sql
--- Grant app access to your role
-GRANT USAGE ON STREAMLIT RCM_AI_DEMO.RCM_SCHEMA.RCM_INTELLIGENCE_HUB 
-  TO ROLE YOUR_ROLE;
-
--- Grant agent access
-GRANT USAGE ON AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod 
-  TO ROLE YOUR_ROLE;
-```
-
-**Agent not responding**:
-1. Verify agent exists (see above)
-2. Check agent name in `streamlit_app.py` matches: `RCM_Healthcare_Agent_Prod`
-3. Verify you have USAGE grant on agent
+✅ All 7 SQL scripts executed without errors  
+✅ Streamlit app running and accessible  
+✅ Analytics questions return data  
+✅ Knowledge questions return documents  
+✅ RCM terminology enhanced automatically  
+✅ Debug panel shows agent reasoning (if enabled)
 
 ---
 
-## 📚 Need More Help?
+## Getting Help
 
-- **Full Deployment Guide**: [DEPLOYMENT.md](DEPLOYMENT.md)
-- **Technical Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
-- **Demo Script**: [RCM_15_Minute_Demo_Story.md](RCM_15_Minute_Demo_Story.md)
+- **Documentation**: See `ARCHITECTURE.md` for technical details
+- **Demo Script**: See `DEMO_HIGHLIGHTS.md` for presentation guide
+- **Standards**: See `SNOWFLAKE_STANDARDS_UPDATE.md` for compliance info
 
----
-
-## 📹 Video Walkthrough
-
-**Step-by-Step Deployment** (If recorded):
-1. SQL setup (10 min)
-2. Streamlit app creation (5 min)
-3. Testing and validation (5 min)
-4. User access configuration (5 min)
+- **Snowflake Resources**:
+  - [Cortex Agents Docs](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
+  - [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
+  - [Getting Started with Cortex Agents (Snowflake Labs)](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/getting-started-with-cortex-agents/getting-started-with-cortex-agents.md)
 
 ---
 
-## ⏱️ Time Breakdown
-
-| Step | Time | Status |
-|------|------|--------|
-| SQL Scripts (01-07) | 15 min | ✅ |
-| Streamlit App Setup | 5 min | ✅ |
-| Testing | 5 min | ✅ |
-| User Access Config | 5 min | ⚙️ Optional |
-| **Total** | **25-30 min** | **🎉** |
-
----
-
-**You're all set! Start querying your RCM data with natural language.** 🎉
-
-**Everything runs in Snowsight - no local setup required!**
+**Total Time:** ~30 minutes  
+**Difficulty:** Beginner (copy/paste in Snowsight)  
+**Result:** Production-ready RCM Intelligence Hub 🎉

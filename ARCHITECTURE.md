@@ -103,7 +103,7 @@ The RCM Intelligence Hub provides a **unified AI interface** for Healthcare Reve
 
 ## Component Details
 
-### 1. Streamlit App (`streamlit_app.py`)
+### 1. Streamlit App (`08_streamlit_app.py`)
 
 **Purpose**: User interface running in Snowflake
 
@@ -114,27 +114,38 @@ The RCM Intelligence Hub provides a **unified AI interface** for Healthcare Reve
 - Sample question buttons
 - RCM terminology help
 
-**Key Code**:
+**Key Code** (Official Snowflake Pattern):
 ```python
 from snowflake.snowpark.context import get_active_session
+import _snowflake
+import json
 
 # Native Snowflake session (no credentials needed)
 session = get_active_session()
 
-# Call agent
-result = session.sql("""
-    SELECT SNOWFLAKE.CORTEX.COMPLETE(
-        'RCM_Healthcare_Agent_Prod',
-        [{'role': 'user', 'content': :query}]
-    )
-""").collect()
+# Call agent using REST API (recommended approach)
+response = _snowflake.send_snow_api_request(
+    method="POST",
+    url=f"/api/v2/databases/{DATABASE}/schemas/{SCHEMA}/agents/{AGENT_NAME}:run",
+    headers={
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    },
+    body=json.dumps({
+        "query": user_query,
+        "thread_id": thread_id  # Maintains conversation context
+    }),
+    timeout=60
+)
 ```
 
 **Benefits**:
-- No credential management
-- Direct Snowflake access
-- Inherits RBAC
-- ~400 lines of clean code
+- ✅ No credential management
+- ✅ Direct Snowflake access via REST API
+- ✅ Inherits RBAC (CORTEX_AGENT_USER role)
+- ✅ Thread-based context management
+- ✅ ~500 lines of standards-compliant code
+- ✅ Fallback support for backward compatibility
 
 ---
 
@@ -142,13 +153,13 @@ result = session.sql("""
 
 **Purpose**: Snowflake-managed orchestration
 
-**Configuration** (`07_rcm_native_agent_production.sql`):
+**Configuration** (`06_rcm_agent_setup.sql` - Per [Official Standards](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)):
 ```sql
-CREATE AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent_Prod
+CREATE AGENT SNOWFLAKE_INTELLIGENCE.AGENTS.RCM_Healthcare_Agent
 FROM SPECIFICATION $$
 {
   "models": {
-    "orchestration": "auto"  // Snowflake picks best model
+    "orchestration": "auto"  // ✅ Official recommendation - auto-selects best model
   },
   "instructions": {
     "orchestration": "

@@ -1,13 +1,17 @@
 """
 RCM Intelligence Hub - Streamlit in Snowflake (SiS) Version
-Production deployment with Native Cortex Agent orchestration
+Step 8 of 8 in the RCM Intelligence Hub setup process
 
-This is the SiS-optimized version that replaces the external app.py.
-Key differences from external deployment:
-- Uses get_active_session() instead of snowflake.connector
-- Calls native Cortex Agent instead of custom orchestrator
-- Cost tracking via query history
-- All data stays within Snowflake perimeter
+Production deployment with Native Cortex Agent orchestration following
+official Snowflake standards: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents
+
+Key features:
+- Uses get_active_session() for native Snowflake integration
+- Calls Cortex Agent via REST API (_snowflake module)
+- Thread-based conversation context management
+- RCM domain intelligence with 50+ healthcare terms
+- Zero data movement (HIPAA compliant)
+- Auto model selection (orchestration: "auto")
 """
 
 import streamlit as st
@@ -42,13 +46,14 @@ MAX_CHAT_HISTORY = 50
 WELCOME_MESSAGE = """
 👋 **Welcome to the RCM Intelligence Hub!**
 
-I'm your unified AI assistant for healthcare revenue cycle management, now powered by **Snowflake's Native Cortex Agent** for enterprise-grade orchestration.
+I'm your unified AI assistant for healthcare revenue cycle management, powered by **Snowflake Cortex Agents** following official Snowflake best practices.
 
-**🎯 What's New in This Production Version:**
+**🎯 Production Architecture Features:**
 - ✅ **Zero Data Movement**: Everything runs inside Snowflake
-- ✅ **Native Orchestration**: Snowflake manages routing automatically  
-- ✅ **Enhanced Security**: HIPAA-compliant, data never leaves Snowflake
-- ✅ **Auto-Scaling**: Snowflake handles compute optimization
+- ✅ **Native Agent Orchestration**: Auto model selection, planning, and reflection
+- ✅ **REST API Integration**: Official Snowflake SiS pattern
+- ✅ **Thread Management**: Maintains conversation context automatically
+- ✅ **HIPAA Compliant**: Data never leaves Snowflake perimeter
 
 I can help you with:
 
@@ -67,7 +72,10 @@ I can help you with:
 - *"Explain the difference between CO and PR adjustments"*
 
 ---
-**🔄 Architecture**: Native Cortex Agent automatically routes your questions to the right tool!
+**🔄 Architecture**: 
+- **Agent Model**: Auto (Snowflake selects best available)
+- **Tools**: 2 Cortex Analyst + 5 Cortex Search + 3 Custom UDFs
+- **Orchestration**: Planning → Tool Use → Reflection → Response
 """
 
 # ========================================================================
@@ -97,25 +105,47 @@ def init_session_state():
 # ========================================================================
 
 def create_thread():
-    """Create a new conversation thread with the agent."""
-    session = st.session_state.session
-    
+    """Create a new conversation thread with the agent using REST API."""
     try:
-        # Create thread via REST API would go here
-        # For now, generate a simple thread ID
+        import _snowflake
+        
+        # Create thread using native REST API
+        response = _snowflake.send_snow_api_request(
+            method="POST",
+            url=f"/api/v2/databases/{DATABASE}/schemas/{SCHEMA}/agents/{AGENT_NAME}/threads",
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body=json.dumps({}),  # Empty body for new thread
+            timeout=30
+        )
+        
+        if response and 'data' in response:
+            thread_id = response['data'].get('thread_id')
+            return thread_id
+        else:
+            # Fallback to UUID if API doesn't return thread_id
+            import uuid
+            return str(uuid.uuid4())
+            
+    except ImportError:
+        # Fallback for local development
         import uuid
-        thread_id = str(uuid.uuid4())
-        return thread_id
+        return str(uuid.uuid4())
     except Exception as e:
         st.error(f"Error creating thread: {e}")
-        return None
+        import uuid
+        return str(uuid.uuid4())
 
 
 def call_agent(user_query: str, thread_id: str = None):
     """
-    Call the native Cortex Agent with the user's query.
+    Call the native Cortex Agent using the REST API pattern.
     
-    This replaces the custom orchestrator.process_query() method.
+    This follows Snowflake's recommended approach for calling agents from
+    Streamlit in Snowflake (SiS) applications.
+    
     The agent handles:
     - Intent classification
     - RCM terminology enhancement (via UDF)
@@ -125,37 +155,37 @@ def call_agent(user_query: str, thread_id: str = None):
     session = st.session_state.session
     
     try:
-        # Build the agent call
-        # Note: Adjust based on final Cortex Agent API
-        # This uses the agent message completion pattern
+        import _snowflake
         
-        agent_query = f"""
-        SELECT PARSE_JSON(
-            SNOWFLAKE.CORTEX.COMPLETE(
-                'RCM_Healthcare_Agent_Prod',
-                [
-                    {{
-                        'role': 'user',
-                        'content': '{user_query.replace("'", "''")}'
-                    }}
-                ]
-            )
-        ) as response
-        """
+        # Build request payload per Snowflake standards
+        request_payload = {
+            "query": user_query
+        }
         
-        # Execute query
-        result = session.sql(agent_query).collect()
+        # Add thread_id if maintaining conversation context
+        if thread_id:
+            request_payload["thread_id"] = thread_id
         
-        if result and len(result) > 0:
-            response_data = result[0]['RESPONSE']
-            
-            # Parse response
-            if isinstance(response_data, str):
-                response_data = json.loads(response_data)
+        # Call agent using native REST API from SiS
+        # This is the recommended pattern per official docs
+        response = _snowflake.send_snow_api_request(
+            method="POST",
+            url=f"/api/v2/databases/{DATABASE}/schemas/{SCHEMA}/agents/{AGENT_NAME}:run",
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body=json.dumps(request_payload),
+            timeout=60
+        )
+        
+        # Parse the streaming response
+        if response and 'data' in response:
+            response_data = response['data']
             
             # Extract message content
-            if 'choices' in response_data and len(response_data['choices']) > 0:
-                message = response_data['choices'][0].get('message', {})
+            if 'message' in response_data:
+                message = response_data['message']
                 response_text = message.get('content', 'No response generated')
                 
                 # Get usage info for cost tracking
@@ -170,7 +200,8 @@ def call_agent(user_query: str, thread_id: str = None):
                         "output_tokens": usage.get('completion_tokens', 0),
                         "total_tokens": usage.get('total_tokens', 0)
                     },
-                    "agent_name": AGENT_NAME
+                    "agent_name": AGENT_NAME,
+                    "thread_id": response_data.get('thread_id')
                 }
             else:
                 return {
@@ -184,6 +215,72 @@ def call_agent(user_query: str, thread_id: str = None):
                 "error": "No response from agent",
                 "response": "I apologize, but I couldn't generate a response. Please try again."
             }
+            
+    except ImportError:
+        # Fallback to SQL-based approach if _snowflake module not available
+        # This can happen in local development or older SiS versions
+        return call_agent_sql_fallback(user_query, thread_id)
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "response": f"I encountered an error: {str(e)}"
+        }
+
+
+def call_agent_sql_fallback(user_query: str, thread_id: str = None):
+    """
+    Fallback method using SQL when REST API is not available.
+    Used for local development or older SiS versions.
+    """
+    session = st.session_state.session
+    
+    try:
+        # SQL-based agent call (fallback)
+        agent_query = f"""
+        SELECT PARSE_JSON(
+            SNOWFLAKE.CORTEX.COMPLETE(
+                '{AGENT_NAME}',
+                [
+                    {{
+                        'role': 'user',
+                        'content': '{user_query.replace("'", "''")}'
+                    }}
+                ]
+            )
+        ) as response
+        """
+        
+        result = session.sql(agent_query).collect()
+        
+        if result and len(result) > 0:
+            response_data = result[0]['RESPONSE']
+            
+            if isinstance(response_data, str):
+                response_data = json.loads(response_data)
+            
+            if 'choices' in response_data and len(response_data['choices']) > 0:
+                message = response_data['choices'][0].get('message', {})
+                response_text = message.get('content', 'No response generated')
+                usage = response_data.get('usage', {})
+                
+                return {
+                    "success": True,
+                    "response": response_text,
+                    "model": response_data.get('model', 'auto'),
+                    "usage": {
+                        "input_tokens": usage.get('prompt_tokens', 0),
+                        "output_tokens": usage.get('completion_tokens', 0),
+                        "total_tokens": usage.get('total_tokens', 0)
+                    },
+                    "agent_name": AGENT_NAME
+                }
+        
+        return {
+            "success": False,
+            "error": "No response from agent",
+            "response": "I apologize, but I couldn't generate a response. Please try again."
+        }
             
     except Exception as e:
         return {
@@ -298,25 +395,25 @@ def render_sidebar():
         # Architecture info
         with st.expander("ℹ️ About This App"):
             st.markdown("""
-            **Architecture**: Streamlit in Snowflake + Native Cortex Agent
+            **Architecture**: Streamlit in Snowflake + Cortex Agents (Official Pattern)
             
-            **Benefits**:
-            - ✅ Zero data movement (all in Snowflake)
-            - ✅ Native orchestration (Snowflake-managed)
-            - ✅ HIPAA compliant (data perimeter)
-            - ✅ Auto-scaling compute
-            - ✅ 50% cost reduction vs external hosting
+            **Snowflake Standards Compliance**:
+            - ✅ REST API integration (_snowflake module)
+            - ✅ Auto model selection (best available)
+            - ✅ Thread-based context management
+            - ✅ CORTEX_AGENT_USER role-based access
+            - ✅ Multi-tool orchestration (10 tools total)
             
-            **How It Works**:
-            1. You ask a question
-            2. Native agent enhances with RCM terminology
-            3. Agent routes to Analytics or Knowledge Base
-            4. Response generated with full context
+            **Agent Workflow** (per [official docs](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)):
+            1. **Planning**: Agent analyzes your question and creates execution plan
+            2. **Tool Use**: Routes to Analyst, Search, or Custom tools
+            3. **Reflection**: Evaluates results and determines next steps
+            4. **Response**: Generates comprehensive answer with context
             
             **Tools Available**:
-            - 📊 Cortex Analyst (structured data)
-            - 📚 Cortex Search (documents/policies)
-            - 🔧 RCM Terminology UDFs (domain intelligence)
+            - 📊 **Cortex Analyst** (2): Claims & Denials semantic views
+            - 📚 **Cortex Search** (5): Finance, Ops, Compliance, Strategy, Knowledge Base
+            - 🔧 **Custom Tools** (3): RCM terminology, document URLs, alerts
             """)
         
         # RCM Terminology
@@ -396,6 +493,10 @@ def process_user_query(user_query: str):
             
             # Call agent
             result = call_agent(user_query, st.session_state.thread_id)
+            
+            # Update thread_id if agent returned one
+            if result.get("thread_id"):
+                st.session_state.thread_id = result["thread_id"]
             
             # Display response
             response_text = result.get("response", "I apologize, but I couldn't generate a response.")
