@@ -11,8 +11,8 @@ USE ROLE accountadmin;
 --CREATE SCHEMA IF NOT EXISTS snowflake_intelligence.agents;
 
 -- Allow anyone to see the agents in this schema
-GRANT USAGE ON DATABASE snowflake_intelligence TO ROLE PUBLIC;
-GRANT USAGE ON SCHEMA snowflake_intelligence.agents TO ROLE PUBLIC;
+--GRANT USAGE ON DATABASE snowflake_intelligence TO ROLE PUBLIC;
+--GRANT USAGE ON SCHEMA snowflake_intelligence.agents TO ROLE PUBLIC;
 
 -- Create role for RCM demo
 --CREATE OR REPLACE ROLE SF_INTELLIGENCE_DEMO;
@@ -40,10 +40,11 @@ ALTER USER IDENTIFIER($current_user_name) SET DEFAULT_WAREHOUSE = RCM_INTELLIGEN
 -- Demo is completely self-contained
 
 -- Switch to SF_INTELLIGENCE_DEMO role to create demo objects
+
 USE ROLE SF_INTELLIGENCE_DEMO;
 
 -- Create database and schema
-CREATE OR REPLACE DATABASE RCM_AI_DEMO;
+CREATE DATABASE IF NOT EXISTS RCM_AI_DEMO;
 USE DATABASE RCM_AI_DEMO;
 
 CREATE SCHEMA IF NOT EXISTS RCM_SCHEMA;
